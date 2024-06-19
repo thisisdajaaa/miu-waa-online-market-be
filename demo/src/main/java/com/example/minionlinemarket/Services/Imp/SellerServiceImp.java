@@ -62,6 +62,10 @@ public class SellerServiceImp implements SellerService {
             }
 
             return existingSeller;
+    }
 
+    @Override
+    public List<Seller> findAllPending() {
+        return sellerRepo.findAllByisApproved(false);
     }
 }

@@ -12,4 +12,5 @@ public interface SellerService {
     Seller update(Long id, Seller seller);
 
 
+    List<Seller> findAllPending();
 }
