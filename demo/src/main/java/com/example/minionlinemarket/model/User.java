@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Setter
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance()
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class User {
