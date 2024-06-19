@@ -57,4 +57,11 @@ public class ReviewController {
         Set<Review> reviews = reviewService.getReviewsforSpacificProduct(productId);
         return ResponseEntity.ok(reviews);
     }
+
+    @GetMapping("/inappropriates")
+    public ResponseEntity<List<Review>> getInappropriateReviews() {
+        List<Review> reviews = reviewService.getInappropriateReviews();
+        return ResponseEntity.ok(reviews);
+    }
+
 }

@@ -81,5 +81,10 @@ public class ReviewServiceImp implements ReviewService {
         return  reviewRepo.findById(Math.toIntExact(id)).orElseThrow(() -> new ResourceNotFoundException("review not found with ID: " + id));
     }
 
+    @Override
+    public List<Review> getInappropriateReviews() {
+        return reviewRepo.findAllByisFlagged(true);
+    }
+
 
 }

@@ -22,8 +22,10 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
+    @JsonBackReference
     private Buyer buyer;
 
     private String content;
     private int rating;
+    private boolean isFlagged;
 }

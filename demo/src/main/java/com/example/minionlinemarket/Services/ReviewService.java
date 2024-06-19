@@ -14,4 +14,5 @@ public interface ReviewService {
     Review findById(Long Id);
 
 
+    List<Review> getInappropriateReviews();
 }
