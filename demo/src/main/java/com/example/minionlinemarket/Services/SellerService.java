@@ -13,4 +13,5 @@ public interface SellerService {
     void deletOrder(Long id);
 
 
+    List<Seller> findAllPending();
 }

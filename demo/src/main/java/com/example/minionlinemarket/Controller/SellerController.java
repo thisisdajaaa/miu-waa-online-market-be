@@ -27,6 +27,12 @@ public class SellerController {
         return ResponseEntity.ok(sellers);
     }
 
+    @GetMapping("/pending")
+    public ResponseEntity<List<Seller>> getAllPendingSellers() {
+        List<Seller> sellers = sellerService.findAllPending();
+        return ResponseEntity.ok(sellers);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Seller> getSellerById(@PathVariable Long id) {
         Seller seller = sellerService.findById(id);
