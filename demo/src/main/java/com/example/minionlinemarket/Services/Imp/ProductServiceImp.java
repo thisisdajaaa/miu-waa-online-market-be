@@ -62,11 +62,8 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Product update(Long id,Product product) {
-        Optional<Product> optionalProduct = productRepo.findById(Math.toIntExact(id));
+            Product existingProduct = productRepo.findById(Math.toIntExact(id)).get();
 
-        if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.get();
-            existingProduct.setId(product.getId());
             if (product.getName() != null) {
                 existingProduct.setName(product.getName());
             }
@@ -134,10 +131,8 @@ public class ProductServiceImp implements ProductService {
                 existingProduct.setOccasion(product.getOccasion());
             }
 
-            return productRepo.save(existingProduct);
-        } else {
-            throw new ResourceNotFoundException("Seller not found with ID: " + id);
-        }
+            return existingProduct;
+
     }
 
 

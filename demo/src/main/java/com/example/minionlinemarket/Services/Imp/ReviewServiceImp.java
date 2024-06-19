@@ -43,11 +43,8 @@ public class ReviewServiceImp implements ReviewService {
 
     @Override
     public Review updateReview(Long id, Review review) {
-        Optional<Review> optionalReview = reviewRepo.findById(Math.toIntExact(id));
+            Review existingReview = reviewRepo.findById(Math.toIntExact(id)).get();
 
-        if (optionalReview.isPresent()) {
-            Review existingReview = optionalReview.get();
-            existingReview.setId(optionalReview.get().getId());
             // Update fields if new value is not null
             if (review.getContent() != null) {
                 existingReview.setContent(review.getContent());
@@ -65,10 +62,8 @@ public class ReviewServiceImp implements ReviewService {
 
 
             // Save the updated review
-            return reviewRepo.save(existingReview);
-        } else {
-            throw new ResourceNotFoundException("Review not found with ID: " + id);
-        }
+            return existingReview;
+
     }
 
     @Override
@@ -78,7 +73,7 @@ public class ReviewServiceImp implements ReviewService {
 
     @Override
     public Set<Review> getReviewsforSpacificProduct(Long Id) {
-        return Set.of();
+        return productService.findById(Id).getReviews();
     }
 
     @Override

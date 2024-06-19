@@ -1,6 +1,5 @@
 package com.example.minionlinemarket.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,25 +16,17 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Seller {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Seller extends MyUser {
 
-    private String username;
-    private String password;
-    private String email;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     @BatchSize(size = 10)
     private Set<Product> products;
 
-//    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @BatchSize(size = 10)
-//    private Set<Order> orders;
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
+    @JsonManagedReference
+    private Set<myOrder> myOrders;
 
     private boolean isApproved;
 }

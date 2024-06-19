@@ -48,12 +48,9 @@ public class SellerServiceImp implements SellerService {
 
     @Override
     public Seller update(Long id, Seller seller) {
-        Optional<Seller> optionalSeller = sellerRepo.findById(Math.toIntExact(id));
-
-        if (optionalSeller.isPresent()) {
-            Seller existingSeller = optionalSeller.get();
-            existingSeller.setId(seller.getId());
+            Seller existingSeller = sellerRepo.findById(Math.toIntExact(id)).get();
             if (seller.getUsername() != null) {
+                System.out.println("hello iam here");
                 existingSeller.setUsername(seller.getUsername());
             }
             if (seller.getEmail() != null) {
@@ -64,9 +61,7 @@ public class SellerServiceImp implements SellerService {
                 existingSeller.setEmail(seller.getPassword());
             }
 
-            return sellerRepo.save(existingSeller);
-        }else {
-            throw new ResourceNotFoundException("Seller not found with ID: " + id);
-        }
+            return existingSeller;
+
     }
 }

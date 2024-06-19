@@ -15,11 +15,11 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Buyer extends User {
+public class Buyer extends MyUser {
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @BatchSize(size = 10)
-    private Set<Order> orders;
+//    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    @BatchSize(size = 10)
+//    private Set<Order> orders;
 
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
