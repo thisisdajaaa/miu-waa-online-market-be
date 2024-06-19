@@ -65,4 +65,17 @@ public class SellerController {
 
             return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<Void> approveSeller(@PathVariable Long id) {
+        sellerService.approveSeller(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/disapprove")
+    public ResponseEntity<Void> disapproveSeller(@PathVariable Long id) {
+        sellerService.disapproveSeller(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

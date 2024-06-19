@@ -77,6 +77,21 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
+    public void approveSeller(Long id) {
+        Seller s = sellerRepo.findById(Math.toIntExact(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with ID: " + id));
+        s.setApproved(true);
+        sellerRepo.save(s);
+    }
+
+    @Override
+    public void disapproveSeller(Long id) {
+        Seller s = sellerRepo.findById(Math.toIntExact(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with ID: " + id));
+        delete(s);
+    }
+
+    @Override
     public void deletOrder(Long id) {
         myOrder order=  orderRepo.findById(Math.toIntExact(id)).orElseThrow(() -> new ResourceNotFoundException("Order not found with ID in deletOrder in seller : " + id));
         if(order.getStatus()==OrderStatus.PLACED){

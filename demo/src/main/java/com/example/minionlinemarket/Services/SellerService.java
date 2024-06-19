@@ -14,4 +14,8 @@ public interface SellerService {
 
 
     List<Seller> findAllPending();
+
+    void approveSeller(Long id);
+
+    void disapproveSeller(Long id);
 }
