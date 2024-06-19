@@ -5,6 +5,7 @@ import com.example.minionlinemarket.Services.ProductService;
 import com.example.minionlinemarket.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,9 +35,10 @@ public class ProductController {
         Product product = productService.findById(id);
         return ResponseEntity.ok(product);
     }
-
-    @PostMapping(value ="/sellers/{sellerId}",consumes = "application/json")
-    public ResponseEntity<Product> addProduct(@PathVariable Long sellerId, @RequestBody Product product,@RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+//    consumes = "application/json"
+    @PostMapping(value ="/sellers/{sellerId}",consumes ="multipart/form-data")
+    public ResponseEntity<Product> addProduct(@PathVariable Long sellerId,  @RequestPart("product") Product product
+            ,@RequestPart(value = "file", required = false) MultipartFile image) throws IOException {
         if(image != null) {
             Product addedProduct = productService.save(sellerId, product,image);
             return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
