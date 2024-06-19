@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -33,10 +35,15 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping("/sellers/{sellerId}")
-    public ResponseEntity<Product> addProduct(@PathVariable Long sellerId, @RequestBody Product product) {
-        Product addedProduct = productService.save(sellerId, product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
+    @PostMapping(value ="/sellers/{sellerId}",consumes = "application/json")
+    public ResponseEntity<Product> addProduct(@PathVariable Long sellerId, @RequestBody Product product,@RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        if(image != null) {
+            Product addedProduct = productService.save(sellerId, product,image);
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
+        }else{
+            Product addedProduct = productService.save(sellerId, product);
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
+        }
     }
 
     @PutMapping("/{id}")

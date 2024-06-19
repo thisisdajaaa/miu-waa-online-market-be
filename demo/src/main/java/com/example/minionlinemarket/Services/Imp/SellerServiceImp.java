@@ -1,12 +1,17 @@
 package com.example.minionlinemarket.Services.Imp;
 
+import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Repository.sellerRepo;
+import com.example.minionlinemarket.Services.OrderService;
 import com.example.minionlinemarket.Services.SellerService;
+import com.example.minionlinemarket.model.OrderStatus;
 import com.example.minionlinemarket.model.Seller;
+import com.example.minionlinemarket.model.myOrder;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +22,12 @@ public class SellerServiceImp implements SellerService {
 
 
     private final sellerRepo sellerRepo;
+    private final OrderRepo orderRepo;
 
     @Autowired
-    public SellerServiceImp(sellerRepo sellerRepo) {
+    public SellerServiceImp(sellerRepo sellerRepo, OrderRepo orderRepo) {
         this.sellerRepo = sellerRepo;
+        this.orderRepo = orderRepo;
     }
 
 
@@ -63,5 +70,15 @@ public class SellerServiceImp implements SellerService {
 
             return existingSeller;
 
+    }
+
+    @Override
+    public void deletOrder(Long id) {
+        myOrder order=  orderRepo.findById(Math.toIntExact(id)).orElseThrow(() -> new ResourceNotFoundException("Order not found with ID in deletOrder in seller : " + id));
+        if(order.getStatus()==OrderStatus.PLACED){
+            order.setStatus(OrderStatus.CANCELED);
+            return;
+        }
+        // what should we do here
     }
 }

@@ -10,6 +10,7 @@ public interface SellerService {
     Seller save(Seller seller);
     void delete(Seller seller);
     Seller update(Long id, Seller seller);
+    void deletOrder(Long id);
 
 
 }

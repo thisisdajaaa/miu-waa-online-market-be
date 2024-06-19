@@ -33,7 +33,7 @@ public class OrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @PostMapping("/{sellerId}")
+    @PostMapping("/seller/{sellerId}")
     public ResponseEntity<myOrder> createOrder(@PathVariable("sellerId") Long sellerId, @RequestBody myOrder myOrder) {
         myOrder savedOrder = orderService.save(sellerId, myOrder);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
