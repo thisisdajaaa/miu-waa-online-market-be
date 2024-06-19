@@ -51,4 +51,12 @@ public class SellerController {
         sellerService.delete(sellerToDelete);
         return ResponseEntity.noContent().build();
     }
+
+
+    @PutMapping("/deletorder/{id}")
+    public ResponseEntity<Void> deleteSellerOrder(@PathVariable Long id) {
+        sellerService.deletOrder(id);
+
+            return ResponseEntity.noContent().build();
+    }
 }

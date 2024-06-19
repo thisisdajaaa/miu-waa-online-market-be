@@ -39,10 +39,10 @@ public class myOrder {
 
     private double totalAmount;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @BatchSize(size = 10)
-    @JsonManagedReference
-    private Set<LineItem> lineItems;
+//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    @BatchSize(size = 10)
+//    @JsonManagedReference
+//    private Set<LineItem> lineItems;
 
     private String shippingAddress;
     private String billingAddress;

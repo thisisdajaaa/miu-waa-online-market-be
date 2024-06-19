@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 import org.hibernate.annotations.BatchSize;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -26,7 +27,12 @@ public class Product {
     private String description;
     private double price;
     private int stockQuantity;
-    private String image;
+
+    @Lob
+    private byte[] image;
+
+
+
     private boolean purchased;
     private String category;
     private String subcategory;

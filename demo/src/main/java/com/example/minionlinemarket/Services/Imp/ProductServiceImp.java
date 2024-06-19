@@ -9,7 +9,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,8 +50,20 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Product save(Long id,Product product) {
+    public Product save(Long id, Product product) {
         Seller seller = sellerService.findById(id);
+        product.setSeller(seller);
+
+        return productRepo.save(product);
+    }
+
+    @Override
+    public Product save(Long id, Product product, MultipartFile image) throws IOException {
+        Seller seller = sellerService.findById(id);
+        if (image != null && !image.isEmpty()) {
+            byte[] imageBytes = image.getBytes();
+            product.setImage(imageBytes);
+        }
         product.setSeller(seller);
 
         return productRepo.save(product);
@@ -134,6 +148,8 @@ public class ProductServiceImp implements ProductService {
             return existingProduct;
 
     }
+
+
 
 
 }
