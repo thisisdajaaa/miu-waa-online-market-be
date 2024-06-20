@@ -14,17 +14,14 @@ import java.io.IOException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
-    private final JWTUtil jwtUtil;
+    private  JWTUtil jwtUtil;
 
     public JWTFilter(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String origin = request.getHeader("Origin");
         if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("http://127.0.0.1:5173"))) {
             response.setHeader("Access-Control-Allow-Origin", origin);
@@ -55,3 +52,4 @@ public class JWTFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

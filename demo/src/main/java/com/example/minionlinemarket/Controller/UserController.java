@@ -1,5 +1,7 @@
 package com.example.minionlinemarket.Controller;
 
+import com.example.minionlinemarket.Model.Dto.Request.UserDto;
+import com.example.minionlinemarket.Model.Dto.Response.AuthenticationDetailDto;
 import com.example.minionlinemarket.Services.MyUserService;
 import com.example.minionlinemarket.Model.MyUser;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,11 +40,15 @@ public class UserController {
 
     @PreAuthorize("hasAnyAuthority('BUYER', 'SELLER', 'ADMIN')")
     @GetMapping("/showMe")
-    public MyUser showMe() {
+    public AuthenticationDetailDto showMe() {
         MyUser auth = (MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (auth == null) {
             throw new RuntimeException("User not authenticated");
         }
-        return auth;
+        return convertToDTO(auth);
+    }
+
+    private AuthenticationDetailDto convertToDTO(MyUser user) {
+        return AuthenticationDetailDto.builder().id(user.getId()).name(user.getName()).role(user.getRole().name()).email(user.getEmail()).build();
     }
 }

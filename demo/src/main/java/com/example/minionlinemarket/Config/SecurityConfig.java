@@ -31,15 +31,6 @@ public class SecurityConfig {
     private JWTFilter jwtFilters;
     private final String[] roles = {"BUYER", "SELLER", "ADMIN"};
 
-    @Value("#{'${cors.allowed-origins}'.split(',')}")
-    private List<String> allowedOrigins;
-    @Value("#{'${cors.allowed-methods}'.split(',')}")
-    private List<String> allowedMethods;
-    @Value("#{'${cors.allowed-headers}'.split(',')}")
-    private List<String> allowedHeaders;
-    @Value("#{'${cors.exposed-headers}'.split(',')}")
-    private List<String> exposedHeaders;
-
     public SecurityConfig(
             MyUserService myUserService,
             JWTFilter jwtFilters
@@ -61,16 +52,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowCredentials(true);
-                    configuration.setAllowedMethods(allowedMethods);
-                    configuration.setAllowedHeaders(allowedHeaders);
-                    configuration.setExposedHeaders(exposedHeaders);
-                    configuration.addAllowedOrigin("http://localhost:5173");
-                    configuration.addAllowedOrigin("http://127.0.0.1:5173");
-                    return configuration;
-                }))
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
@@ -107,4 +89,6 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return daoAuthenticationProvider;
     }
+
 }
+

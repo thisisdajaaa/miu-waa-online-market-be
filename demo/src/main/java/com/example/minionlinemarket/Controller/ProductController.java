@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','BUYER','SELLER')")
-    @GetMapping("/{id}")
+    @GetMapping("/getSingleProduct/{id}")
     public ResponseEntity<ProductDetailDto> getProductById(@PathVariable Long id) {
         ProductDetailDto product = productService.findById(id);
         return ResponseEntity.ok(product);
