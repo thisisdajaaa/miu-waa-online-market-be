@@ -1,7 +1,8 @@
 package com.example.minionlinemarket.Config;
 
 import com.example.minionlinemarket.Services.MyUserService;
-import com.example.minionlinemarket.filters.JWTFilter;
+import com.example.minionlinemarket.Filter.JWTFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -24,6 +30,15 @@ public class SecurityConfig {
     private MyUserService myUserService;
     private JWTFilter jwtFilters;
     private final String[] roles = {"BUYER", "SELLER", "ADMIN"};
+
+    @Value("#{'${cors.allowed-origins}'.split(',')}")
+    private List<String> allowedOrigins;
+    @Value("#{'${cors.allowed-methods}'.split(',')}")
+    private List<String> allowedMethods;
+    @Value("#{'${cors.allowed-headers}'.split(',')}")
+    private List<String> allowedHeaders;
+    @Value("#{'${cors.exposed-headers}'.split(',')}")
+    private List<String> exposedHeaders;
 
     public SecurityConfig(
             MyUserService myUserService,
@@ -41,11 +56,18 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowCredentials(true);
+                    configuration.addAllowedOrigin("http://localhost:5173"); // Adjust this to your frontend URL
+                    configuration.addAllowedHeader("*");
+                    configuration.addAllowedMethod("*");
+                    return configuration;
+                }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                         )
@@ -77,5 +99,4 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return daoAuthenticationProvider;
     }
-
 }

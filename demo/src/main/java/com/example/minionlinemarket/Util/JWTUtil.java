@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.utils;
+package com.example.minionlinemarket.Util;
 
 import com.example.minionlinemarket.Services.MyUserService;
 import io.jsonwebtoken.*;

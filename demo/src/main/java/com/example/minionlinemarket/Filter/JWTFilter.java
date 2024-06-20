@@ -1,6 +1,6 @@
-package com.example.minionlinemarket.filters;
+package com.example.minionlinemarket.Filter;
 
-import com.example.minionlinemarket.utils.JWTUtil;
+import com.example.minionlinemarket.Util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
-    private  JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
 
     public JWTFilter(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -26,25 +26,28 @@ public class JWTFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        String origin = request.getHeader("Origin");
+        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("http://127.0.0.1:5173"))) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            response.setHeader("Access-Control-Expose-Headers", "Authorization");
+        }
+
         String token = null;
 
-        if(request.getCookies() != null){
-            for(Cookie cookie: request.getCookies()){
-                if(cookie.getName().equals("accessToken")){
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("accessToken")) {
                     token = cookie.getValue();
                 }
             }
         }
 
-//        final String authorizationHeader = request.getHeader("Authorization");
-//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//            token = authorizationHeader.substring(7);
-//        }
-
         if (token != null && jwtUtil.validateToken(token)) {
             SecurityContextHolder.getContext().setAuthentication(jwtUtil.getAuthentication(token));
         }
-            filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }

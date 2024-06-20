@@ -18,7 +18,6 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
     private final ProductService productService;

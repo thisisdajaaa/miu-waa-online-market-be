@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sellers")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SellerController {
 
     private final SellerService sellerService;
