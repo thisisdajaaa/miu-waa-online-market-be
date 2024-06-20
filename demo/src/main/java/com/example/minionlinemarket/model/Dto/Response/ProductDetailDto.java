@@ -36,4 +36,5 @@ public class ProductDetailDto {
     private String usage;
     private String occasion;
     private Set<ReviewDetailDto> reviews;
+    private String base64Image;
 }
