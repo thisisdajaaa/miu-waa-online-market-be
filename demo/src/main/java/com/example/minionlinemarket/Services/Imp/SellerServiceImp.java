@@ -98,6 +98,9 @@ public class SellerServiceImp implements SellerService {
     public void disapproveSeller(Long id) {
         Seller seller = sellerRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Seller not found with ID: " + id));
+        if (!seller.getProducts().isEmpty() || !seller.getMyOrders().isEmpty()) {
+            throw new IllegalStateException("Seller cannot be deleted, has products or orders related to it.");
+        }
         delete(mapperConfiguration.convert(seller, SellerDetailDto.class));
     }
 

@@ -2,6 +2,7 @@ package com.example.minionlinemarket.Services.Imp;
 
 import com.example.minionlinemarket.Config.MapperConfiguration;
 import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.Model.Dto.Response.ReviewAdminDto;
 import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
 import com.example.minionlinemarket.Model.Product;
 import com.example.minionlinemarket.Repository.ReviewRepo;
@@ -81,9 +82,9 @@ public class ReviewServiceImp implements ReviewService {
     }
 
     @Override
-    public List<ReviewDetailDto> getInappropriateReviews() {
-        return reviewRepo.findAllByisFlagged(true).stream()
-                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+    public List<ReviewAdminDto> getInappropriateReviews() {
+        return reviewRepo.findAllByisFlagged(false).stream()
+                .map(ReviewAdminDto::new)
                 .collect(Collectors.toList());
     }
 }

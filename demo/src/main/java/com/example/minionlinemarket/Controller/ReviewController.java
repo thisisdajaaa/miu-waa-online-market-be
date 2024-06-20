@@ -1,6 +1,7 @@
 package com.example.minionlinemarket.Controller;
 
 import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.Model.Dto.Response.ReviewAdminDto;
 import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
 import com.example.minionlinemarket.Services.ReviewService;
 import com.example.minionlinemarket.Model.Review;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/reviews")
+@CrossOrigin(origins = "*")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -61,8 +63,8 @@ public class ReviewController {
     }
 
     @GetMapping("/inappropriates")
-    public ResponseEntity<List<ReviewDetailDto>> getInappropriateReviews() {
-        List<ReviewDetailDto> reviews = reviewService.getInappropriateReviews();
+    public ResponseEntity<List<ReviewAdminDto>> getInappropriateReviews() {
+        List<ReviewAdminDto> reviews = reviewService.getInappropriateReviews();
         return ResponseEntity.ok(reviews);
     }
 }

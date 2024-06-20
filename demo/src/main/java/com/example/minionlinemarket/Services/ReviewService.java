@@ -1,6 +1,7 @@
 package com.example.minionlinemarket.Services;
 
 import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.Model.Dto.Response.ReviewAdminDto;
 import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
 import com.example.minionlinemarket.Model.Review;
 
@@ -14,5 +15,5 @@ public interface ReviewService {
     void deleteReview(ReviewDetailDto reviewDetailDto);
     Set<ReviewDetailDto> getReviewsForSpecificProduct(Long productId);
     ReviewDetailDto findById(Long id);
-    List<ReviewDetailDto> getInappropriateReviews();
+    List<ReviewAdminDto> getInappropriateReviews();
 }
