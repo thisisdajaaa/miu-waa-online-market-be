@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 public class ProductDto {
     private String name;
     private String description;
-    private double price;
-    private int stockQuantity;
+    private Double price;
+    private Integer stockQuantity;
     private byte[] image;
     private String category;
     private String subcategory;
     private String brand;
-    private double rating;
-    private double discount;
+    private Double rating;
+    private Double discount;
     private String productType;
     private String color;
     private String sizeOrDimensions;

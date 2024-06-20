@@ -1,6 +1,5 @@
 package com.example.minionlinemarket.Controller;
 
-
 import com.example.minionlinemarket.Model.Dto.Request.ProductDto;
 import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
 import com.example.minionlinemarket.Services.ProductService;
@@ -14,10 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
     private final ProductService productService;
 
@@ -25,21 +26,26 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN','BUYER','SELLER')")
     @GetMapping
     public ResponseEntity<List<ProductDetailDto>> getAllProducts() {
         List<ProductDetailDto> products = productService.findAll();
         return ResponseEntity.ok(products);
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN','BUYER','SELLER')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductDetailDto> getProductById(@PathVariable Long id) {
         ProductDetailDto product = productService.findById(id);
         return ResponseEntity.ok(product);
     }
+
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping(value = "/sellers/{sellerId}", consumes = "multipart/form-data")
-    public ResponseEntity<ProductDetailDto> addProduct(@PathVariable Long sellerId, @Valid @RequestPart("product") ProductDto productDto,@Valid @RequestPart(value = "file", required = false) MultipartFile image) throws IOException {
+    public ResponseEntity<ProductDetailDto> addProduct(@PathVariable Long sellerId,
+            @Valid @RequestPart("product") ProductDto productDto,
+            @Valid @RequestPart(value = "file", required = false) MultipartFile image) throws IOException {
         ProductDetailDto addedProduct;
         if (image != null && !image.isEmpty()) {
             addedProduct = productService.save(sellerId, productDto, image.getBytes());
@@ -50,9 +56,17 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDetailDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
-        ProductDetailDto updatedProduct = productService.update(id, productDto);
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<ProductDetailDto> updateProduct(
+            @PathVariable Long id,
+            @RequestPart("product") ProductDto productDto,
+            @RequestPart(value = "file", required = false) MultipartFile image) throws IOException {
+        ProductDetailDto updatedProduct;
+        if (image != null && !image.isEmpty()) {
+            updatedProduct = productService.update(id, productDto, image.getBytes());
+        } else {
+            updatedProduct = productService.update(id, productDto);
+        }
         return ResponseEntity.ok(updatedProduct);
     }
 
@@ -63,10 +77,13 @@ public class ProductController {
         productService.delete(productToDelete);
         return ResponseEntity.noContent().build();
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
     @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<Set<ProductDetailDto>> getProductsBySellerId(@PathVariable Long sellerId) {
-        Set<ProductDetailDto> products = productService.findAllProductsForSpecificSeller(sellerId);
+    public ResponseEntity<Set<ProductDetailDto>> getProductsBySeller(
+            @PathVariable Long sellerId,
+            @RequestParam Map<String, String> filters) {
+        Set<ProductDetailDto> products = productService.findAllProductsForSpecificSeller(sellerId, filters);
         return ResponseEntity.ok(products);
     }
 }

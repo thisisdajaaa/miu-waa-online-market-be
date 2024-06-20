@@ -14,6 +14,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/reviews")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ReviewController {
 
     private final ReviewService reviewService;
