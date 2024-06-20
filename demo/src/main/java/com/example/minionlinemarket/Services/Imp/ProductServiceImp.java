@@ -79,7 +79,6 @@ public class ProductServiceImp implements ProductService {
             product.setImage(image);
         }
         product.setSeller(seller);
-        System.out.println(product.getImage());
         Product savedProduct = productRepo.save(product);
         return mapperConfiguration.convert(savedProduct, ProductDetailDto.class);
     }
