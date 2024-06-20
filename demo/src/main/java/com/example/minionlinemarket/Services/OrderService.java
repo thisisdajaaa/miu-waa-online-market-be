@@ -1,8 +1,7 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
-import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
-import com.example.minionlinemarket.Model.MyOrder;
+import com.example.minionlinemarket.model.Dto.Request.OrderDto;
+import com.example.minionlinemarket.model.Dto.Response.OrderDetailDto;
 
 import java.util.List;
 import java.util.Set;

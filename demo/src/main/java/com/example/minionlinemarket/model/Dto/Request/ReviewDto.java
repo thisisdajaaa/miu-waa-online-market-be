@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.Model.Dto.Request;
+package com.example.minionlinemarket.model.Dto.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

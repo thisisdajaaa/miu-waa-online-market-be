@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.Model.Dto.Response;
+package com.example.minionlinemarket.model.Dto.Response;
 
 
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Set;
 public class SellerDetailDto {
     private Long id;
     private boolean isApproved;
-    private String username;
+    private String name;
     private String password;
     private String email;
     private Set<ProductDetailDto> products;

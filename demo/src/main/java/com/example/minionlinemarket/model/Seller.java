@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.Model;
+package com.example.minionlinemarket.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -17,6 +17,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Seller extends MyUser {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -27,7 +28,7 @@ public class Seller extends MyUser {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
     @JsonManagedReference
-    private Set<MyOrder> myOrders = new HashSet<>();
+    private Set<myOrder> myOrders = new HashSet<>();
 
     private boolean isApproved;
 }

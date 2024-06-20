@@ -1,8 +1,8 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
-import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
-import com.example.minionlinemarket.Model.Review;
+import com.example.minionlinemarket.model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.model.Dto.Response.ReviewDetailDto;
+import com.example.minionlinemarket.model.Review;
 
 import java.util.List;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.Model;
+package com.example.minionlinemarket.model;
 
 public enum Role {
     ADMIN, SELLER, BUYER

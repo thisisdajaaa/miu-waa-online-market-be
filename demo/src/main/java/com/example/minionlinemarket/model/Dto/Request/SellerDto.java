@@ -1,5 +1,6 @@
-package com.example.minionlinemarket.Model.Dto.Request;
+package com.example.minionlinemarket.model.Dto.Request;
 
+import com.example.minionlinemarket.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SellerDto {
     private boolean isApproved;
-    private String username;
+    private String name;
     private String password;
     private String email;
+    private Role role;
 }

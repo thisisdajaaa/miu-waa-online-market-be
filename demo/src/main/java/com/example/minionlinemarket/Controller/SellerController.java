@@ -1,12 +1,14 @@
 package com.example.minionlinemarket.Controller;
 
 
-import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
-import com.example.minionlinemarket.Model.Dto.Response.SellerDetailDto;
+import com.example.minionlinemarket.model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.model.Dto.Response.SellerDetailDto;
 import com.example.minionlinemarket.Services.SellerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +36,12 @@ public class SellerController {
         return ResponseEntity.ok(sellers);
     }
 
+    @GetMapping("/numberofproducts/{id}")
+    public ResponseEntity<Integer> getnumberofproductforspacificseller(@PathVariable Long id){
+        int numberofproduct = sellerService.numberofproducts(id);
+        return ResponseEntity.ok(numberofproduct);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<SellerDetailDto> getSellerById(@PathVariable Long id) {
         SellerDetailDto seller = sellerService.findById(id);
@@ -41,7 +49,7 @@ public class SellerController {
     }
 
     @PostMapping
-    public ResponseEntity<SellerDetailDto> createSeller(@RequestBody SellerDto sellerDto) {
+    public ResponseEntity<SellerDetailDto> createSeller( @RequestBody SellerDto sellerDto) {
         SellerDetailDto createdSeller = sellerService.save(sellerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSeller);
     }

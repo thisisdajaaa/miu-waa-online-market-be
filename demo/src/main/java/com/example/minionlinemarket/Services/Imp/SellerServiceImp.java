@@ -1,14 +1,14 @@
 package com.example.minionlinemarket.Services.Imp;
 
-import com.example.minionlinemarket.Config.MapperConfiguration;
-import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
-import com.example.minionlinemarket.Model.Dto.Response.SellerDetailDto;
+import com.example.minionlinemarket.config.MapperConfiguration;
+import com.example.minionlinemarket.model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.model.Dto.Response.SellerDetailDto;
 import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Repository.SellerRepo;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.Model.OrderStatus;
-import com.example.minionlinemarket.Model.Seller;
-import com.example.minionlinemarket.Model.MyOrder;
+import com.example.minionlinemarket.model.OrderStatus;
+import com.example.minionlinemarket.model.Seller;
+import com.example.minionlinemarket.model.myOrder;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +53,8 @@ public class SellerServiceImp implements SellerService {
         return mapperConfiguration.convert(seller, SellerDetailDto.class);
     }
 
+
+
     @Override
     public SellerDetailDto save(SellerDto sellerDto) {
         Seller seller = mapperConfiguration.convert(sellerDto, Seller.class);
@@ -74,6 +76,7 @@ public class SellerServiceImp implements SellerService {
         Seller seller = mapperConfiguration.convert(sellerDetailDto, Seller.class);
         sellerRepo.delete(seller);
     }
+
 
     @Override
     public List<SellerDetailDto> findAllPending() {
@@ -102,8 +105,13 @@ public class SellerServiceImp implements SellerService {
     }
 
     @Override
+    public int numberofproducts(Long id) {
+        return findById(id).getProducts().size();
+    }
+
+    @Override
     public void deleteOrder(Long id) {
-        MyOrder order = orderRepo.findById(id)
+        myOrder order = orderRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         if (order.getStatus() == OrderStatus.PLACED) {
             order.setStatus(OrderStatus.CANCELED);

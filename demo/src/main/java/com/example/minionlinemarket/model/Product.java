@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.Model;
+package com.example.minionlinemarket.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

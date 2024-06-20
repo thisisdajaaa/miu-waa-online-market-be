@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.Model;
+package com.example.minionlinemarket.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,4 +28,6 @@ public class Payment {
     private Date paymentDate;
 
     private String paymentMethod;
+
+    // make payment method as an entity
 }
