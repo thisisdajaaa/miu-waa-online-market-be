@@ -23,10 +23,10 @@ public class Buyer extends MyUser {
 
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
-    private Set<Review> reviews;
+    private Set<com.example.minionlinemarket.Model.Review> reviews;
 
     @OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private ShoppingCart shoppingCart;
+    private com.example.minionlinemarket.Model.ShoppingCart shoppingCart;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "buyer_address",

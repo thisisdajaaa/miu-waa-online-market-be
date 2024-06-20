@@ -23,11 +23,11 @@ public class LineItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private com.example.minionlinemarket.Model.Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopping_cart_id")
-    private ShoppingCart shoppingCart;
+    private com.example.minionlinemarket.Model.ShoppingCart shoppingCart;
 
     private int quantity;
 }
