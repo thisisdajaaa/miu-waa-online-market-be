@@ -21,11 +21,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String origin = request.getHeader("Origin");
         if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("http://127.0.0.1:5173"))) {
             response.setHeader("Access-Control-Allow-Origin", origin);
@@ -35,8 +31,12 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setHeader("Access-Control-Expose-Headers", "Authorization");
         }
 
-        String token = null;
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
+        String token = null;
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (cookie.getName().equals("accessToken")) {
@@ -48,6 +48,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (token != null && jwtUtil.validateToken(token)) {
             SecurityContextHolder.getContext().setAuthentication(jwtUtil.getAuthentication(token));
         }
+
         filterChain.doFilter(request, response);
     }
 }
