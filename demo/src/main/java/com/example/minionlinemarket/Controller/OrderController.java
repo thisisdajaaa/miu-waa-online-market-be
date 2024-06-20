@@ -14,6 +14,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/orders")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OrderController {
 
     private final OrderService orderService;

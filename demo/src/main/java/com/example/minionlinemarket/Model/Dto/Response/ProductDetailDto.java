@@ -15,14 +15,14 @@ public class ProductDetailDto {
     private Long id;
     private String name;
     private String description;
-    private double price;
-    private int stockQuantity;
+    private Double price;
+    private Integer stockQuantity;
     private Long sellerId;
     private String category;
     private String subcategory;
     private String brand;
-    private double rating;
-    private double discount;
+    private Double rating;
+    private Double discount;
     private String productType;
     private String color;
     private String sizeOrDimensions;
