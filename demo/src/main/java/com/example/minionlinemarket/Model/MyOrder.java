@@ -24,10 +24,10 @@ public class MyOrder {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    private Seller seller;
+    private com.example.minionlinemarket.Model.Seller seller;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private com.example.minionlinemarket.Model.OrderStatus status;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;

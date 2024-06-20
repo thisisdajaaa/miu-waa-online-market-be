@@ -1,7 +1,5 @@
 package com.example.minionlinemarket.Model;
 
-import com.example.minionlinemarket.Model.Buyer;
-import com.example.minionlinemarket.Model.Product;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

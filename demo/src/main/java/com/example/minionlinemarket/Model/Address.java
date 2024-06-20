@@ -25,5 +25,5 @@ public class Address {
     private String country;
 
     @ManyToMany(mappedBy = "addresses", fetch = FetchType.LAZY)
-    private Set<Buyer> buyers;
+    private Set<com.example.minionlinemarket.Model.Buyer> buyers;
 }
