@@ -28,7 +28,6 @@ public class MyOrder {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
 
