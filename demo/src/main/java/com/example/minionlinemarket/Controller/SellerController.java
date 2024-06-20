@@ -1,8 +1,9 @@
 package com.example.minionlinemarket.Controller;
 
 
+import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.Model.Dto.Response.SellerDetailDto;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.model.Seller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,48 +23,46 @@ public class SellerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Seller>> getAllSellers() {
-        List<Seller> sellers = sellerService.findAll();
+    public ResponseEntity<List<SellerDetailDto>> getAllSellers() {
+        List<SellerDetailDto> sellers = sellerService.findAll();
         return ResponseEntity.ok(sellers);
     }
 
     @GetMapping("/pending")
-    public ResponseEntity<List<Seller>> getAllPendingSellers() {
-        List<Seller> sellers = sellerService.findAllPending();
+    public ResponseEntity<List<SellerDetailDto>> getAllPendingSellers() {
+        List<SellerDetailDto> sellers = sellerService.findAllPending();
         return ResponseEntity.ok(sellers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) {
-        Seller seller = sellerService.findById(id);
+    public ResponseEntity<SellerDetailDto> getSellerById(@PathVariable Long id) {
+        SellerDetailDto seller = sellerService.findById(id);
         return ResponseEntity.ok(seller);
     }
 
     @PostMapping
-    public ResponseEntity<Seller> createSeller(@RequestBody Seller seller) {
-        Seller createdSeller = sellerService.save(seller);
+    public ResponseEntity<SellerDetailDto> createSeller(@RequestBody SellerDto sellerDto) {
+        SellerDetailDto createdSeller = sellerService.save(sellerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSeller);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Seller> updateSeller(@PathVariable Long id, @RequestBody Seller seller) {
-        Seller updatedSeller = sellerService.update(id, seller);
+    public ResponseEntity<SellerDetailDto> updateSeller(@PathVariable Long id, @RequestBody SellerDto sellerDto) {
+        SellerDetailDto updatedSeller = sellerService.update(id, sellerDto);
         return ResponseEntity.ok(updatedSeller);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable Long id) {
-        Seller sellerToDelete = sellerService.findById(id);
+        SellerDetailDto sellerToDelete = sellerService.findById(id);
         sellerService.delete(sellerToDelete);
         return ResponseEntity.noContent().build();
     }
 
-
-    @PutMapping("/deletorder/{id}")
+    @PutMapping("/deleteorder/{id}")
     public ResponseEntity<Void> deleteSellerOrder(@PathVariable Long id) {
-        sellerService.deletOrder(id);
-
-            return ResponseEntity.noContent().build();
+        sellerService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/approve")
@@ -77,5 +76,4 @@ public class SellerController {
         sellerService.disapproveSeller(id);
         return ResponseEntity.noContent().build();
     }
-
 }

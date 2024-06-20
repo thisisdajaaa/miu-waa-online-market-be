@@ -1,6 +1,6 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.model.LineItem;
+import com.example.minionlinemarket.Model.LineItem;
 
 import java.util.List;
 

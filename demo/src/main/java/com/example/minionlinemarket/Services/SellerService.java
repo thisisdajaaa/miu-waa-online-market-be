@@ -1,21 +1,18 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.model.Seller;
+import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.Model.Dto.Response.SellerDetailDto;
 
 import java.util.List;
 
 public interface SellerService {
-    List<Seller> findAll();
-    Seller findById(Long id);
-    Seller save(Seller seller);
-    void delete(Seller seller);
-    Seller update(Long id, Seller seller);
-    void deletOrder(Long id);
-
-
-    List<Seller> findAllPending();
-
+    List<SellerDetailDto> findAll();
+    SellerDetailDto findById(Long id);
+    SellerDetailDto save(SellerDto sellerDto);
+    void delete(SellerDetailDto sellerDetailDto);
+    SellerDetailDto update(Long id, SellerDto sellerDto);
+    void deleteOrder(Long id);
+    List<SellerDetailDto> findAllPending();
     void approveSeller(Long id);
-
     void disapproveSeller(Long id);
 }
