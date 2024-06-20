@@ -1,5 +1,8 @@
 package com.example.minionlinemarket.Services.Imp;
 
+import com.example.minionlinemarket.Model.Admin;
+import com.example.minionlinemarket.Model.Dto.Request.AdminDTO;
+import com.example.minionlinemarket.Repository.AdminRepo;
 import com.example.minionlinemarket.Repository.UserRepo;
 import com.example.minionlinemarket.Services.MyUserService;
 import com.example.minionlinemarket.Services.SellerService;
@@ -14,10 +17,12 @@ import java.util.List;
 public class UserServiceImpl implements MyUserService {
     private UserRepo userRepository;
     private final SellerService sellerService;
+    private final AdminRepo adminRepo;
 
-    public UserServiceImpl(UserRepo userRepository, SellerService sellerService) {
+    public UserServiceImpl(UserRepo userRepository, SellerService sellerService, AdminRepo adminRepo) {
         this.userRepository = userRepository;
         this.sellerService = sellerService;
+        this.adminRepo = adminRepo;
     }
 
     @Override
@@ -31,6 +36,18 @@ public class UserServiceImpl implements MyUserService {
                 newseller.setPassword(user.getPassword());
                 newseller.setRole(user.getRole());
                 sellerService.save(newseller);
+            }
+            if(user.getRole().toString().equals("ADMIN")){
+                Admin admin = new Admin();
+                admin.setName(user.getName());
+                admin.setEmail(user.getEmail());
+                admin.setRole(user.getRole());
+                admin.setPassword(user.getPassword());
+                adminRepo.save(admin);
+            }
+
+            if(user.getRole().toString().equals("BUYER")){
+
             }
 
 

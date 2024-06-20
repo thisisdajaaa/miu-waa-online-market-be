@@ -85,6 +85,7 @@ public class ProductServiceImp implements ProductService {
     @Override
     public void delete(ProductDetailDto productDetailDto) {
         Product product = mapperConfiguration.convert(productDetailDto, Product.class);
+
         productRepo.delete(product);
     }
 

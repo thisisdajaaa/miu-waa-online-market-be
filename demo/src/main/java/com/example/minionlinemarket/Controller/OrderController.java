@@ -6,6 +6,7 @@ import com.example.minionlinemarket.Services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,23 +23,21 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<OrderDetailDto>> getAllOrders() {
         List<OrderDetailDto> orders = orderService.findAll();
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SELLER','BUYER')")
     @GetMapping("/{id}")
     public ResponseEntity<OrderDetailDto> getOrderById(@PathVariable("id") Long id) {
         OrderDetailDto order = orderService.findById(id);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @PostMapping("/ss")
-    public void get(@RequestBody OrderDto orderDto){
-        System.out.println("hello  "+orderDto.getOrderDate());
-    }
-
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/creat")
     public ResponseEntity<OrderDetailDto> createOrder(@RequestBody OrderDto orderDto) {
         System.out.println("hello  "+orderDto.getOrderDate());
@@ -46,12 +45,14 @@ public class OrderController {
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @PutMapping("/{id}")
     public ResponseEntity<OrderDetailDto> updateOrder(@PathVariable("id") Long id, @RequestBody OrderDto orderDto) {
         OrderDetailDto order = orderService.update(id, orderDto);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('BUYER','SELLER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id) {
         OrderDetailDto orderToDelete = orderService.findById(id);
@@ -59,12 +60,14 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<Set<OrderDetailDto>> getOrdersBySellerId(@PathVariable("sellerId") Long sellerId) {
         Set<OrderDetailDto> orders = orderService.findOrderBySellerId(sellerId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('BUYER','ADMIN')")
     @GetMapping("/buyer/{buyerId}")
     public ResponseEntity<Set<OrderDetailDto>> getOrdersByBuyerId(@PathVariable("buyerId") Long buyerId) {
         Set<OrderDetailDto> orders = orderService.findOrderByBuyerId(buyerId);
