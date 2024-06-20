@@ -1,6 +1,9 @@
-package com.example.minionlinemarket.model;
+package com.example.minionlinemarket.Model;
 
+import com.example.minionlinemarket.Model.Buyer;
+import com.example.minionlinemarket.Model.Product;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +25,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
-    @JsonBackReference
+    @JsonIgnore
     private Buyer buyer;
 
     private String content;

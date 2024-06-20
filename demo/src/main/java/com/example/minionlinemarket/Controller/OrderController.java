@@ -1,7 +1,9 @@
 package com.example.minionlinemarket.Controller;
 
+import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
+import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
 import com.example.minionlinemarket.Services.OrderService;
-import com.example.minionlinemarket.model.myOrder;
+import com.example.minionlinemarket.Model.MyOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,45 +24,45 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<myOrder>> getAllOrders() {
-        List<myOrder> orders = orderService.findAll();
+    public ResponseEntity<List<OrderDetailDto>> getAllOrders() {
+        List<OrderDetailDto> orders = orderService.findAll();
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<myOrder> getOrderById(@PathVariable("id") Long id) {
-        myOrder order = orderService.findById(id);
+    public ResponseEntity<OrderDetailDto> getOrderById(@PathVariable("id") Long id) {
+        OrderDetailDto order = orderService.findById(id);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @PostMapping("/seller/{sellerId}")
-    public ResponseEntity<myOrder> createOrder(@PathVariable("sellerId") Long sellerId, @RequestBody myOrder myOrder) {
-        myOrder savedOrder = orderService.save(sellerId, myOrder);
+    @PostMapping
+    public ResponseEntity<OrderDetailDto> createOrder(@RequestBody OrderDto orderDto) {
+        OrderDetailDto savedOrder = orderService.save(orderDto);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<myOrder> updateOrder(@PathVariable("id") Long id, @RequestBody myOrder updatedOrder) {
-        myOrder order = orderService.update(id, updatedOrder);
+    public ResponseEntity<OrderDetailDto> updateOrder(@PathVariable("id") Long id, @RequestBody OrderDto orderDto) {
+        OrderDetailDto order = orderService.update(id, orderDto);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id) {
-        myOrder order = orderService.findById(id);
-        orderService.delete(order);
+        OrderDetailDto orderToDelete = orderService.findById(id);
+        orderService.delete(orderToDelete);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<Set<myOrder>> getOrdersBySellerId(@PathVariable("sellerId") Long sellerId) {
-        Set<myOrder> orders = orderService.findOrderBySellerId(sellerId);
+    public ResponseEntity<Set<OrderDetailDto>> getOrdersBySellerId(@PathVariable("sellerId") Long sellerId) {
+        Set<OrderDetailDto> orders = orderService.findOrderBySellerId(sellerId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/buyer/{buyerId}")
-    public ResponseEntity<Set<myOrder>> getOrdersByBuyerId(@PathVariable("buyerId") Long buyerId) {
-        Set<myOrder> orders = orderService.findOrderByBuyerId(buyerId);
+    public ResponseEntity<Set<OrderDetailDto>> getOrdersByBuyerId(@PathVariable("buyerId") Long buyerId) {
+        Set<OrderDetailDto> orders = orderService.findOrderByBuyerId(buyerId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }

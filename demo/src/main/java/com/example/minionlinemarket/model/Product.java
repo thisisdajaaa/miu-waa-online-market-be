@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.model;
+package com.example.minionlinemarket.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 import org.hibernate.annotations.BatchSize;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -30,8 +29,6 @@ public class Product {
 
     @Lob
     private byte[] image;
-
-
 
     private boolean purchased;
     private String category;

@@ -1,90 +1,89 @@
 package com.example.minionlinemarket.Services.Imp;
 
-import com.example.minionlinemarket.Repository.ProductRepo;
+import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
+import com.example.minionlinemarket.Model.Product;
 import com.example.minionlinemarket.Repository.ReviewRepo;
 import com.example.minionlinemarket.Services.ProductService;
 import com.example.minionlinemarket.Services.ReviewService;
-import com.example.minionlinemarket.model.Review;
+import com.example.minionlinemarket.Model.Review;
 import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ReviewServiceImp implements ReviewService {
 
-    private ReviewRepo reviewRepo;
-    private ProductService productService;
+    private final ReviewRepo reviewRepo;
+    private final ProductService productService;
+    private final MapperConfiguration mapperConfiguration;
 
     @Autowired
-    public ReviewServiceImp(ReviewRepo reviewRepo, ProductService productService) {
+    public ReviewServiceImp(ReviewRepo reviewRepo, ProductService productService, MapperConfiguration mapperConfiguration) {
         this.reviewRepo = reviewRepo;
         this.productService = productService;
-    }
-
-
-    @Override
-    public List<Review> getReviews() {
-        return reviewRepo.findAll();
+        this.mapperConfiguration = mapperConfiguration;
     }
 
     @Override
-    public Review addReview(Long id,Review review) {
-        review.setProduct(productService.findById(id));
-        return reviewRepo.save(review);
+    public List<ReviewDetailDto> getReviews() {
+        return reviewRepo.findAll().stream()
+                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Review updateReview(Long id, Review review) {
-            Review existingReview = reviewRepo.findById(Math.toIntExact(id)).get();
-
-            // Update fields if new value is not null
-            if (review.getContent() != null) {
-                existingReview.setContent(review.getContent());
-            }
-            if (review.getRating() != 0) { // Assuming rating cannot be null, adjust condition as needed
-                existingReview.setRating(review.getRating());
-            }
-            // Update relationships if necessary
-            if (review.getProduct() != null) {
-                existingReview.setProduct(review.getProduct());
-            }
-            if (review.getBuyer() != null) {
-                existingReview.setBuyer(review.getBuyer());
-            }
-
-
-            // Save the updated review
-            return existingReview;
-
+    public ReviewDetailDto addReview(Long productId, ReviewDto reviewDto) {
+        Review review = mapperConfiguration.convert(reviewDto, Review.class);
+        Product product = mapperConfiguration.convert(productService.findById(productId), Product.class);
+        review.setProduct(product);
+        Review savedReview = reviewRepo.save(review);
+        return mapperConfiguration.convert(savedReview, ReviewDetailDto.class);
     }
 
     @Override
-    public void deleteReview(Review review) {
-         reviewRepo.delete(review);
+    public ReviewDetailDto updateReview(Long id, ReviewDto reviewDto) {
+        Review existingReview = reviewRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with ID: " + id));
+        mapperConfiguration.modelMapper().map(reviewDto, existingReview);
+        Review updatedReview = reviewRepo.save(existingReview);
+        return mapperConfiguration.convert(updatedReview, ReviewDetailDto.class);
     }
 
     @Override
-    public Set<Review> getReviewsforSpacificProduct(Long Id) {
-        return productService.findById(Id).getReviews();
+    public void deleteReview(ReviewDetailDto reviewDetailDto) {
+        Review review = mapperConfiguration.convert(reviewDetailDto, Review.class);
+        reviewRepo.delete(review);
     }
 
     @Override
-    public Review findById(Long id) {
-        return  reviewRepo.findById(Math.toIntExact(id)).orElseThrow(() -> new ResourceNotFoundException("review not found with ID: " + id));
+    public Set<ReviewDetailDto> getReviewsForSpecificProduct(Long productId) {
+        Product product = mapperConfiguration.convert(productService.findById(productId), Product.class);
+        Hibernate.initialize(product.getReviews());  // Initialize reviews
+        return product.getReviews().stream()
+                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+                .collect(Collectors.toSet());
     }
 
     @Override
-    public List<Review> getInappropriateReviews() {
-        return reviewRepo.findAllByisFlagged(true);
+    public ReviewDetailDto findById(Long id) {
+        Review review = reviewRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with ID: " + id));
+        return mapperConfiguration.convert(review, ReviewDetailDto.class);
     }
 
-
+    @Override
+    public List<ReviewDetailDto> getInappropriateReviews() {
+        return reviewRepo.findAllByisFlagged(true).stream()
+                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+                .collect(Collectors.toList());
+    }
 }
