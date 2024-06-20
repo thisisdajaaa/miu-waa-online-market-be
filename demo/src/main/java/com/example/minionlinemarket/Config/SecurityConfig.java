@@ -64,9 +64,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowCredentials(true);
-                    configuration.addAllowedOrigin("http://localhost:5173"); // Adjust this to your frontend URL
-                    configuration.addAllowedHeader("*");
-                    configuration.addAllowedMethod("*");
+                    configuration.setAllowedMethods(allowedMethods);
+                    configuration.setAllowedHeaders(allowedHeaders);
+                    configuration.setExposedHeaders(exposedHeaders);
+                    configuration.addAllowedOrigin("http://localhost:5173");
+                    configuration.addAllowedOrigin("http://127.0.0.1:5173");
                     return configuration;
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
