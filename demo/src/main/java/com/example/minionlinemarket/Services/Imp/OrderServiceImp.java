@@ -8,12 +8,18 @@ import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Services.OrderService;
 import com.example.minionlinemarket.Services.SellerService;
 import com.example.minionlinemarket.Model.MyOrder;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,6 +69,48 @@ public class OrderServiceImp implements OrderService {
         mapperConfiguration.modelMapper().map(orderDto, existingOrder);
         MyOrder updatedOrder = orderRepo.save(existingOrder);
         return mapperConfiguration.convert(updatedOrder, OrderDetailDto.class);
+    }
+
+    @Override
+    public ByteArrayResource generateReceipt(Long id) throws DocumentException {
+        MyOrder existingOrder = orderRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
+        OrderDetailDto order = mapperConfiguration.convert(existingOrder, OrderDetailDto.class);
+
+        Document document = new Document();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        PdfWriter.getInstance(document, out);
+        document.open();
+
+        Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
+        Font bodyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
+
+        Paragraph title = new Paragraph("Receipt for Order ID: " + order.getId(), titleFont);
+        title.setAlignment(Element.ALIGN_CENTER);
+        document.add(title);
+
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(10f);
+        table.setSpacingAfter(10f);
+
+        String[] fieldNames = {"Date", "Total amount", "Shipping address", "Billing address"};
+        String[] fieldValues = {order.getOrderDate().toString(), String.valueOf(order.getTotalAmount()), order.getShippingAddress(), order.getBillingAddress()};
+
+        for (int i = 0; i < fieldNames.length; i++) {
+            PdfPCell cell = new PdfPCell(new Phrase(fieldNames[i], bodyFont));
+            cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            table.addCell(cell);
+            table.addCell(new Phrase(fieldValues[i], bodyFont));
+        }
+
+        document.add(table);
+        document.close();
+
+        byte[] bytes = out.toByteArray();
+
+        return new ByteArrayResource(bytes);
     }
 
     @Override
