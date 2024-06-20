@@ -1,9 +1,8 @@
 package com.example.minionlinemarket.Controller;
 
-import com.example.minionlinemarket.model.Dto.Request.ReviewDto;
-import com.example.minionlinemarket.model.Dto.Response.ReviewDetailDto;
+import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
 import com.example.minionlinemarket.Services.ReviewService;
-import com.example.minionlinemarket.model.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

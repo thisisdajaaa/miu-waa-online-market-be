@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.model;
+package com.example.minionlinemarket.Model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class myOrder {
+public class MyOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,14 +1,14 @@
 package com.example.minionlinemarket.Services.Imp;
 
-import com.example.minionlinemarket.config.MapperConfiguration;
-import com.example.minionlinemarket.model.Dto.Request.SellerDto;
-import com.example.minionlinemarket.model.Dto.Response.SellerDetailDto;
+import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.Model.Dto.Response.SellerDetailDto;
 import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Repository.SellerRepo;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.model.OrderStatus;
-import com.example.minionlinemarket.model.Seller;
-import com.example.minionlinemarket.model.myOrder;
+import com.example.minionlinemarket.Model.OrderStatus;
+import com.example.minionlinemarket.Model.Seller;
+import com.example.minionlinemarket.Model.MyOrder;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,7 @@ public class SellerServiceImp implements SellerService {
 
     @Override
     public void deleteOrder(Long id) {
-        myOrder order = orderRepo.findById(id)
+        MyOrder order = orderRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         if (order.getStatus() == OrderStatus.PLACED) {
             order.setStatus(OrderStatus.CANCELED);

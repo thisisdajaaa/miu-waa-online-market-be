@@ -1,19 +1,18 @@
 package com.example.minionlinemarket.Services.Imp;
 
-import com.example.minionlinemarket.config.MapperConfiguration;
-import com.example.minionlinemarket.model.Dto.Request.ProductDto;
-import com.example.minionlinemarket.model.Dto.Response.ProductDetailDto;
+import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.Dto.Request.ProductDto;
+import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
 import com.example.minionlinemarket.Repository.ProductRepo;
 import com.example.minionlinemarket.Services.ProductService;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.model.Product;
-import com.example.minionlinemarket.model.Seller;
+import com.example.minionlinemarket.Model.Product;
+import com.example.minionlinemarket.Model.Seller;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

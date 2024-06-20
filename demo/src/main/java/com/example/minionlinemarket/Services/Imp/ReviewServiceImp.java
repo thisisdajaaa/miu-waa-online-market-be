@@ -1,13 +1,13 @@
 package com.example.minionlinemarket.Services.Imp;
 
-import com.example.minionlinemarket.config.MapperConfiguration;
-import com.example.minionlinemarket.model.Dto.Request.ReviewDto;
-import com.example.minionlinemarket.model.Dto.Response.ReviewDetailDto;
-import com.example.minionlinemarket.model.Product;
+import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.Dto.Request.ReviewDto;
+import com.example.minionlinemarket.Model.Dto.Response.ReviewDetailDto;
+import com.example.minionlinemarket.Model.Product;
 import com.example.minionlinemarket.Repository.ReviewRepo;
 import com.example.minionlinemarket.Services.ProductService;
 import com.example.minionlinemarket.Services.ReviewService;
-import com.example.minionlinemarket.model.Review;
+import com.example.minionlinemarket.Model.Review;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,9 @@
 package com.example.minionlinemarket.Controller;
 
 
-import com.example.minionlinemarket.model.Dto.Request.ProductDto;
-import com.example.minionlinemarket.model.Dto.Response.ProductDetailDto;
+import com.example.minionlinemarket.Model.Dto.Request.ProductDto;
+import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
 import com.example.minionlinemarket.Services.ProductService;
-import com.example.minionlinemarket.model.Product;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

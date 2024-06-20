@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.model.Dto.Response;
+package com.example.minionlinemarket.Model.Dto.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

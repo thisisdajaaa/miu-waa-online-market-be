@@ -1,13 +1,13 @@
 package com.example.minionlinemarket.Services.Imp;
 
-import com.example.minionlinemarket.config.MapperConfiguration;
-import com.example.minionlinemarket.model.Dto.Request.OrderDto;
-import com.example.minionlinemarket.model.Dto.Response.OrderDetailDto;
-import com.example.minionlinemarket.model.Seller;
+import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
+import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
+import com.example.minionlinemarket.Model.Seller;
 import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Services.OrderService;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.model.myOrder;
+import com.example.minionlinemarket.Model.MyOrder;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public OrderDetailDto findById(Long id) {
-        myOrder order = orderRepo.findById(id)
+        MyOrder order = orderRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         Hibernate.initialize(order.getSeller());  // Initialize seller if needed
         return mapperConfiguration.convert(order, OrderDetailDto.class);
@@ -49,25 +49,25 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public OrderDetailDto save(OrderDto orderDto) {
-        myOrder order = mapperConfiguration.convert(orderDto, myOrder.class);
+        MyOrder order = mapperConfiguration.convert(orderDto, MyOrder.class);
         Seller seller = mapperConfiguration.convert(sellerService.findById(orderDto.getSellerId()), Seller.class);
         order.setSeller(seller);
-        com.example.minionlinemarket.model.myOrder savedOrder = orderRepo.save(order);
+        MyOrder savedOrder = orderRepo.save(order);
         return mapperConfiguration.convert(savedOrder, OrderDetailDto.class);
     }
 
     @Override
     public OrderDetailDto update(Long id, OrderDto orderDto) {
-        myOrder existingOrder = orderRepo.findById(id)
+        MyOrder existingOrder = orderRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         mapperConfiguration.modelMapper().map(orderDto, existingOrder);
-        myOrder updatedOrder = orderRepo.save(existingOrder);
+        MyOrder updatedOrder = orderRepo.save(existingOrder);
         return mapperConfiguration.convert(updatedOrder, OrderDetailDto.class);
     }
 
     @Override
     public void delete(OrderDetailDto orderDetailDto) {
-        myOrder order = mapperConfiguration.convert(orderDetailDto, myOrder.class);
+        MyOrder order = mapperConfiguration.convert(orderDetailDto, MyOrder.class);
         orderRepo.delete(order);
     }
 

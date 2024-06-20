@@ -1,7 +1,7 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.model.Dto.Request.SellerDto;
-import com.example.minionlinemarket.model.Dto.Response.SellerDetailDto;
+import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.Model.Dto.Response.SellerDetailDto;
 
 import java.util.List;
 

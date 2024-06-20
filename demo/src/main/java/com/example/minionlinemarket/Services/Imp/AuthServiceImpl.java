@@ -2,7 +2,7 @@ package com.example.minionlinemarket.Services.Imp;
 
 import com.example.minionlinemarket.Services.AuthService;
 import com.example.minionlinemarket.Services.MyUserService;
-import com.example.minionlinemarket.model.MyUser;
+import com.example.minionlinemarket.Model.MyUser;
 import com.example.minionlinemarket.utils.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

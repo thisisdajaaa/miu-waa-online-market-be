@@ -1,6 +1,6 @@
-package com.example.minionlinemarket.model.Dto.Response;
+package com.example.minionlinemarket.Model.Dto.Response;
 
-import com.example.minionlinemarket.model.OrderStatus;
+import com.example.minionlinemarket.Model.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

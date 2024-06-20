@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.config;
+package com.example.minionlinemarket.Config;
 
 import com.example.minionlinemarket.Services.MyUserService;
 import com.example.minionlinemarket.filters.JWTFilter;

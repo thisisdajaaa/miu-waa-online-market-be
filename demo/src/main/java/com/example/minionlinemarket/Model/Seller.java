@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.model;
+package com.example.minionlinemarket.Model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -28,7 +28,7 @@ public class Seller extends MyUser {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
     @JsonManagedReference
-    private Set<myOrder> myOrders = new HashSet<>();
+    private Set<MyOrder> MyOrders = new HashSet<>();
 
     private boolean isApproved;
 }

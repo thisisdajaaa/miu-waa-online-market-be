@@ -3,10 +3,8 @@ package com.example.minionlinemarket.Services.Imp;
 import com.example.minionlinemarket.Repository.UserRepo;
 import com.example.minionlinemarket.Services.MyUserService;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.model.Admin;
-import com.example.minionlinemarket.model.Dto.Request.SellerDto;
-import com.example.minionlinemarket.model.MyUser;
-import com.example.minionlinemarket.model.Seller;
+import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
+import com.example.minionlinemarket.Model.MyUser;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

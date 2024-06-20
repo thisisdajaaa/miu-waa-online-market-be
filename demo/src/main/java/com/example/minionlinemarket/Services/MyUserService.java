@@ -1,9 +1,7 @@
 package com.example.minionlinemarket.Services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
-import com.example.minionlinemarket.model.MyUser;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.example.minionlinemarket.Model.MyUser;
 
 import java.util.List;
 

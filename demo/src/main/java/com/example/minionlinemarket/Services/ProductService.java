@@ -1,10 +1,8 @@
 package com.example.minionlinemarket.Services;
 
 
-import com.example.minionlinemarket.model.Dto.Request.ProductDto;
-import com.example.minionlinemarket.model.Dto.Response.ProductDetailDto;
-import com.example.minionlinemarket.model.Product;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.minionlinemarket.Model.Dto.Request.ProductDto;
+import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
 
 import java.io.IOException;
 import java.util.List;

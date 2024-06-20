@@ -1,7 +1,7 @@
 package com.example.minionlinemarket.Controller;
 
 import com.example.minionlinemarket.Services.MyUserService;
-import com.example.minionlinemarket.model.MyUser;
+import com.example.minionlinemarket.Model.MyUser;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

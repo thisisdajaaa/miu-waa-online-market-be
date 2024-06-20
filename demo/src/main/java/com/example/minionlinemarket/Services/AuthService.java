@@ -1,6 +1,6 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.model.MyUser;
+import com.example.minionlinemarket.Model.MyUser;
 
 import java.util.Map;
 

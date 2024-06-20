@@ -4,7 +4,7 @@ import com.example.minionlinemarket.Services.AuthService;
 import com.example.minionlinemarket.Services.MyUserService;
 //import jakarta.servlet.http.Cookie;
 //import jakarta.servlet.http.HttpServletRequest;
-import com.example.minionlinemarket.model.MyUser;
+import com.example.minionlinemarket.Model.MyUser;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

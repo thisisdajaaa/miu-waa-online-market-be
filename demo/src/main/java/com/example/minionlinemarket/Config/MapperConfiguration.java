@@ -1,7 +1,7 @@
-package com.example.minionlinemarket.config;
+package com.example.minionlinemarket.Config;
 
-import com.example.minionlinemarket.model.Dto.Response.ProductDetailDto;
-import com.example.minionlinemarket.model.Product;
+import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
+import com.example.minionlinemarket.Model.Product;
 import org.hibernate.Hibernate;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;

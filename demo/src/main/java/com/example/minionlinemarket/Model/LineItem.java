@@ -1,6 +1,5 @@
-package com.example.minionlinemarket.model;
+package com.example.minionlinemarket.Model;
 
-import com.example.minionlinemarket.model.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

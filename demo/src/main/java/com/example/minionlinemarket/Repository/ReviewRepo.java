@@ -1,6 +1,6 @@
 package com.example.minionlinemarket.Repository;
 
-import com.example.minionlinemarket.model.Review;
+import com.example.minionlinemarket.Model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
