@@ -1,9 +1,12 @@
 package com.example.minionlinemarket.Services.Imp;
 
+import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.Dto.Request.LoginDto;
+import com.example.minionlinemarket.Model.Dto.Request.UserDto;
 import com.example.minionlinemarket.Services.AuthService;
 import com.example.minionlinemarket.Services.MyUserService;
+import com.example.minionlinemarket.Util.JWTUtil;
 import com.example.minionlinemarket.Model.MyUser;
-import com.example.minionlinemarket.utils.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,35 +21,33 @@ import java.util.Map;
 public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final MapperConfiguration mapperConfiguration;
     MyUserService userService;
 
     private final JWTUtil jwtUtil;
 
     public AuthServiceImpl(
             AuthenticationManager authenticationManager,
-            BCryptPasswordEncoder bCryptPasswordEncoder,
+            BCryptPasswordEncoder bCryptPasswordEncoder, MapperConfiguration mapperConfiguration,
             JWTUtil jwtUtil,
-            MyUserService userService
-    ) {
+            MyUserService userService) {
         this.authenticationManager = authenticationManager;
+        this.mapperConfiguration = mapperConfiguration;
         this.jwtUtil = jwtUtil;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userService = userService;
     }
 
-
     @Override
-    public Map<String, String> login(MyUser user) {
+    public Map<String, String> login(LoginDto loginDto) {
 
         Authentication result = null;
         try {
             result = authenticationManager
                     .authenticate(
                             new UsernamePasswordAuthenticationToken(
-                                    user.getEmail(),
-                                    user.getPassword()
-                            )
-                    );
+                                    loginDto.getEmail(),
+                                    loginDto.getPassword()));
 
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException(e.getMessage());
@@ -60,14 +61,13 @@ public class AuthServiceImpl implements AuthService {
         return Map.of(
                 "msg", "Success! Please check your email to verify account",
                 "accessToken", accessToken,
-                "refreshToken", refreshToken
-        );
+                "refreshToken", refreshToken);
     }
 
     @Override
-    public String register(MyUser user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userService.save(user);
+    public String register(UserDto userDto) {
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        userService.save(mapperConfiguration.convert(userDto, MyUser.class));
         return "Success! Your account has been registered";
     }
 
@@ -86,6 +86,5 @@ public class AuthServiceImpl implements AuthService {
         }
         return "INVALID_REFRESH_TOKEN";
     }
-
 
 }
