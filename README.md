@@ -171,3 +171,26 @@ eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJCVVlFUiJ9XSwic3ViIjoiYUBnbWF
 https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
 ```
 - Added a docker compose dependency to the project and moved the docker compose file to root for faster access
+
+## SELLER AGGREGATE DATA
+
+- Working on returning a json response with the following data
+```
+{
+  labels: ["Pending", "Processing", "Shipped", "Delivered", "Canceled"],
+  datasets: [
+    {
+      data: [10, 15, 5, 50, 5],
+      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#F7464A"],
+      hoverBackgroundColor: [
+        "#FF6384",
+        "#36A2EB",
+        "#FFCE56",
+        "#4BC0C0",
+        "#F7464A",
+      ],
+    },
+  ],
+};
+
+```
