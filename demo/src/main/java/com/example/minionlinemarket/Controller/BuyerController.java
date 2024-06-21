@@ -60,7 +60,7 @@ public class BuyerController {
 //    }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','BUYER')")
-    @GetMapping("getBuyerDetails/{id}")
+    @GetMapping("/getBuyerDetails/{id}")
     public ResponseEntity<BuyerDetailDto> getBuyerById(@PathVariable Long id) {
         return ResponseEntity.ok(buyerService.findById(id));
     }
@@ -72,7 +72,7 @@ public class BuyerController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','BUYER')")
-    @DeleteMapping("Delet/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBuyer(@PathVariable Long id) {
         buyerService.deleteBuyer(id);
         return ResponseEntity.noContent().build();
@@ -125,7 +125,7 @@ public class BuyerController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping(value = "/{buyerId}/makeneworder", consumes = "application/json;charset=UTF-8", produces = "application/json")
+    @PostMapping(value = "/{buyerId}/makeorder", consumes = "application/json;charset=UTF-8", produces = "application/json")
     public ResponseEntity<OrderDetailDto> placeOrder(@PathVariable Long buyerId, @RequestBody OrderDto orderDto) {
         return ResponseEntity.ok(orderService.placeOrder(buyerId, orderDto));
     }

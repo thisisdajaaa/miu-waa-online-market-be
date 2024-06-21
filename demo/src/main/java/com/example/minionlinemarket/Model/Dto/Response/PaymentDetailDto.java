@@ -14,6 +14,6 @@ import java.util.Date;
 public class PaymentDetailDto {
     private Long id;
     private double amount;
-    private Date paymentDate;
+    private String paymentDate;
     private String paymentMethod;
 }

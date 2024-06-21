@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,7 +97,6 @@ public class BuyerServiceImp implements BuyerService {
         buyerRepository.delete(buyer);
     }
 
-    @Override
     public BuyerDetailDto findById(Long id) {
         Buyer buyer = buyerRepository.findById(id).orElseThrow(() -> new RuntimeException("Buyer not found"));
 
@@ -177,15 +177,17 @@ public class BuyerServiceImp implements BuyerService {
     }
 
     private LineItemDetailDto mapToLineItemDetailDto(LineItem lineItem) {
-        System.out.println("Mapping LineItem: " + lineItem);
-        System.out.println("Product in LineItem: " + lineItem.getProduct());
+        ProductDetailDto productDetailDto = mapperConfiguration.convert(lineItem.getProduct(), ProductDetailDto.class);
+
+        if (lineItem.getProduct().getImage() != null) {
+            String base64Image = Base64.getEncoder().encodeToString(lineItem.getProduct().getImage());
+            productDetailDto.setBase64Image(base64Image);
+        }
 
         return LineItemDetailDto.builder()
                 .id(lineItem.getId())
                 .quantity(lineItem.getQuantity())
-                .product(mapperConfiguration.convert(lineItem.getProduct(), ProductDetailDto.class)) // Convert product
-                                                                                                     // to
-                                                                                                     // ProductDetailDto
+                .product(productDetailDto)
                 .build();
     }
 
@@ -196,4 +198,5 @@ public class BuyerServiceImp implements BuyerService {
                         .map(this::mapToLineItemDetailDto).collect(Collectors.toSet()) : new HashSet<>())
                 .build();
     }
+
 }

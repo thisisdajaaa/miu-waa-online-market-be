@@ -44,7 +44,7 @@ public class LineItemServiceImp implements LineItemService {
     public LineItemDetailDto addLineItemToCart(Long buyerId, LineItemDto lineItemDto) {
         Buyer buyer = buyerRepo.findById(buyerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with ID: " + buyerId));
-        
+
         ShoppingCart shoppingCart = buyer.getShoppingCart();
         if (shoppingCart == null) {
             shoppingCart = new ShoppingCart();
@@ -52,7 +52,7 @@ public class LineItemServiceImp implements LineItemService {
             buyer.setShoppingCart(shoppingCart);
             shoppingCartRepo.save(shoppingCart);
         }
-        
+
         if (shoppingCart.getLineItems() == null) {
             shoppingCart.setLineItems(new HashSet<>());
         }
@@ -60,15 +60,28 @@ public class LineItemServiceImp implements LineItemService {
         Product product = productRepo.findById(lineItemDto.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + lineItemDto.getProductId()));
 
-        LineItem lineItem = new LineItem();
-        lineItem.setProduct(product);
-        lineItem.setQuantity(lineItemDto.getQuantity());
-        lineItem.setShoppingCart(shoppingCart);
+        // Check if the line item already exists
+        LineItem existingLineItem = shoppingCart.getLineItems().stream()
+                .filter(item -> item.getProduct().getId().equals(lineItemDto.getProductId()))
+                .findFirst()
+                .orElse(null);
 
-        shoppingCart.getLineItems().add(lineItem);
-        lineItemRepo.save(lineItem);
+        if (existingLineItem != null) {
+            // Increment the quantity
+            existingLineItem.setQuantity(existingLineItem.getQuantity() + lineItemDto.getQuantity());
+            lineItemRepo.save(existingLineItem);
+            return mapperConfiguration.convert(existingLineItem, LineItemDetailDto.class);
+        } else {
+            // Create a new line item
+            LineItem lineItem = new LineItem();
+            lineItem.setProduct(product);
+            lineItem.setQuantity(lineItemDto.getQuantity());
+            lineItem.setShoppingCart(shoppingCart);
 
-        return mapperConfiguration.convert(lineItem, LineItemDetailDto.class);
+            shoppingCart.getLineItems().add(lineItem);
+            lineItemRepo.save(lineItem);
+            return mapperConfiguration.convert(lineItem, LineItemDetailDto.class);
+        }
     }
 
     @Override
@@ -90,7 +103,7 @@ public class LineItemServiceImp implements LineItemService {
     public void removeLineItemFromCart(Long buyerId, Long lineItemId) {
         Buyer buyer = buyerRepo.findById(buyerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with ID: " + buyerId));
-        
+
         ShoppingCart shoppingCart = buyer.getShoppingCart();
         if (shoppingCart == null) {
             throw new ResourceNotFoundException("Shopping cart not found for buyer with ID: " + buyerId);
@@ -99,7 +112,14 @@ public class LineItemServiceImp implements LineItemService {
         LineItem lineItem = lineItemRepo.findById(lineItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Line item not found with ID: " + lineItemId));
 
-        shoppingCart.getLineItems().remove(lineItem);
-        lineItemRepo.delete(lineItem);
+        if (lineItem.getQuantity() > 1) {
+            // Decrement the quantity
+            lineItem.setQuantity(lineItem.getQuantity() - 1);
+            lineItemRepo.save(lineItem);
+        } else {
+            // Remove the line item if quantity is 1
+            shoppingCart.getLineItems().remove(lineItem);
+            lineItemRepo.delete(lineItem);
+        }
     }
 }

@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/creat")
+    @PostMapping("/create")
     public ResponseEntity<OrderDetailDto> createOrder(@RequestBody OrderDto orderDto) {
         System.out.println("hello  "+orderDto.getOrderDate());
         OrderDetailDto savedOrder = orderService.save(orderDto);

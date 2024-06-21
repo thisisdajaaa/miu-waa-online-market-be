@@ -1,10 +1,13 @@
 package com.example.minionlinemarket.Config;
 
+import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
 import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
+import com.example.minionlinemarket.Model.MyOrder;
 import com.example.minionlinemarket.Model.Product;
 import org.hibernate.Hibernate;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,12 +33,21 @@ public class MapperConfiguration {
                 ).map(Product::getImage, ProductDetailDto::setBase64Image)
         );
 
-        // Add converter for Base64 decoding
         mapper.typeMap(ProductDetailDto.class, Product.class).addMappings(item ->
                 item.using((Converter<String, byte[]>) context ->
                         context.getSource() == null ? null : Base64.getDecoder().decode(context.getSource())
                 ).map(ProductDetailDto::getBase64Image, Product::setImage)
         );
+
+//        // Custom mapping for OrderDto to MyOrder
+//        mapper.addMappings(new PropertyMap<OrderDto, MyOrder>() {
+//            @Override
+//            protected void configure() {
+//                map().getSeller().setId(source.getSellerId());
+//                map().getBuyer().setId(source.getBuyerId());
+//                skip(destination.getId());
+//            }
+//        });
 
         return mapper;
     }

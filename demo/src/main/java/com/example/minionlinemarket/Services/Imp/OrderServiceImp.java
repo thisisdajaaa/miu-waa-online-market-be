@@ -8,6 +8,7 @@ import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
 import com.example.minionlinemarket.Model.Seller;
 import com.example.minionlinemarket.Model.ShoppingCart;
+import com.example.minionlinemarket.Repository.AddressRepository;
 import com.example.minionlinemarket.Repository.BuyerRepository;
 import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Repository.ShoppingCartRepo;
@@ -45,18 +46,20 @@ public class OrderServiceImp implements OrderService {
     private final BuyerService buyerService;
     private final ShoppingCartRepo shoppingCartRepo;
     private final MapperConfiguration mapperConfiguration;
+    private final AddressRepository addressRepository;
 
     @Autowired
     private BuyerRepository buyerRepository;
 
     @Autowired
     public OrderServiceImp(OrderRepo orderRepo, SellerService sellerService, BuyerService buyerService,
-            ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration) {
+                           ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration, AddressRepository addressRepository) {
         this.orderRepo = orderRepo;
         this.sellerService = sellerService;
         this.buyerService = buyerService;
         this.shoppingCartRepo = shoppingCartRepo;
         this.mapperConfiguration = mapperConfiguration;
+        this.addressRepository = addressRepository;
     }
 
     @Override
@@ -77,11 +80,31 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public OrderDetailDto save(OrderDto orderDto) {
-        MyOrder order = mapperConfiguration.convert(orderDto, MyOrder.class);
+        MyOrder order = new MyOrder();
+        order.setOrderDate(orderDto.getOrderDate());
+        order.setStatus(OrderStatus.PLACED);
+        order.setTotalAmount(orderDto.getTotalAmount());
+
         Seller seller = mapperConfiguration.convert(sellerService.findById(orderDto.getSellerId()), Seller.class);
         Buyer buyer = mapperConfiguration.convert(buyerService.findById(orderDto.getBuyerId()), Buyer.class);
         order.setSeller(seller);
         order.setBuyer(buyer);
+
+        // Save Addresses
+        Address shippingAddress = convertToAddress(orderDto.getShippingAddress());
+        Address billingAddress = convertToAddress(orderDto.getBillingAddress());
+
+        if (shippingAddress != null) {
+            shippingAddress = addressRepository.save(shippingAddress);
+        }
+
+        if (billingAddress != null) {
+            billingAddress = addressRepository.save(billingAddress);
+        }
+
+        order.setShippingAddress(shippingAddress);
+        order.setBillingAddress(billingAddress);
+
         MyOrder savedOrder = orderRepo.save(order);
         return mapperConfiguration.convert(savedOrder, OrderDetailDto.class);
     }
@@ -137,6 +160,15 @@ public class OrderServiceImp implements OrderService {
         order.setShippingAddress(convertToAddress(orderDto.getShippingAddress()));
         order.setBillingAddress(convertToAddress(orderDto.getBillingAddress()));
 
+        // Save Addresses
+        if (order.getShippingAddress() != null) {
+            addressRepository.save(order.getShippingAddress());
+        }
+
+        if (order.getBillingAddress() != null) {
+            addressRepository.save(order.getBillingAddress());
+        }
+
         // Create a new set of line items for the order
         Set<LineItem> orderLineItems = new HashSet<>();
         for (LineItem item : shoppingCart.getLineItems()) {
@@ -144,6 +176,7 @@ public class OrderServiceImp implements OrderService {
             newItem.setProduct(item.getProduct());
             newItem.setQuantity(item.getQuantity());
             newItem.setOrder(order);
+            newItem.setShoppingCart(null);  // Clear the shopping cart ID
             orderLineItems.add(newItem);
         }
         order.setLineItems(orderLineItems);
@@ -156,6 +189,7 @@ public class OrderServiceImp implements OrderService {
 
         return mapperConfiguration.convert(savedOrder, OrderDetailDto.class);
     }
+
 
     @Override
     @Transactional()
@@ -233,8 +267,8 @@ public class OrderServiceImp implements OrderService {
                 .id(lineItem.getId())
                 .quantity(lineItem.getQuantity())
                 .product(mapperConfiguration.convert(lineItem.getProduct(), ProductDetailDto.class)) // Convert product
-                                                                                                     // to
-                                                                                                     // ProductDetailDto
+                // to
+                // ProductDetailDto
                 .build();
     }
 
