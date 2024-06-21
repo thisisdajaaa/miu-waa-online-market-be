@@ -32,11 +32,9 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.core.io.ByteArrayResource;
 import java.io.ByteArrayOutputStream;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.Date;
 
 @Service
 @Transactional
@@ -313,5 +311,13 @@ public class OrderServiceImp implements OrderService {
         byte[] bytes = out.toByteArray();
 
         return new ByteArrayResource(bytes);
+    }
+
+    @Override
+    public OrderDetailDto updateOrderStatus(Long orderId, OrderStatus status){
+        MyOrder order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+        order.setStatus(status);
+        return mapperConfiguration.convert(orderRepo.save(order), OrderDetailDto.class);
     }
 }

@@ -2,6 +2,7 @@ package com.example.minionlinemarket.Services;
 
 import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
 import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
+import com.example.minionlinemarket.Model.OrderStatus;
 import com.itextpdf.text.DocumentException;
 import org.springframework.core.io.ByteArrayResource;
 
@@ -31,4 +32,6 @@ public interface OrderService {
     void cancelOrder(Long buyerId, Long orderId);
 
     ByteArrayResource generateReceipt(Long id) throws DocumentException;
+
+    OrderDetailDto updateOrderStatus(Long orderId, OrderStatus status);
 }

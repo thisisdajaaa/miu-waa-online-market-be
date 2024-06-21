@@ -2,6 +2,7 @@ package com.example.minionlinemarket.Controller;
 
 import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
 import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
+import com.example.minionlinemarket.Model.OrderStatus;
 import com.example.minionlinemarket.Services.OrderService;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,4 +90,14 @@ public class OrderController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
+
+    @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")
+    @PutMapping("/order-status/{orderId}")
+    public ResponseEntity<OrderDetailDto> updateOrderStatus(@PathVariable("orderId") Long orderId,@RequestBody OrderStatus status)
+    {
+       System.out.println("I GOT HERE!");
+        OrderDetailDto order = orderService.updateOrderStatus(orderId, status);
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
 }

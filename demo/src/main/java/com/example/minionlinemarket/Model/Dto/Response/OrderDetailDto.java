@@ -1,5 +1,6 @@
 package com.example.minionlinemarket.Model.Dto.Response;
 
+import com.example.minionlinemarket.Model.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,5 @@ public class OrderDetailDto {
     private AddressDetailDto billingAddress;
     private Set<LineItemDetailDto> lineItems;
     private Date orderDate;
+    private OrderStatus status;
 }
