@@ -1,13 +1,12 @@
 package com.example.minionlinemarket.Services.Imp;
 
 import com.example.minionlinemarket.Config.MapperConfiguration;
+import com.example.minionlinemarket.Model.*;
 import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
 import com.example.minionlinemarket.Model.Dto.Response.AddressDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.LineItemDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
-import com.example.minionlinemarket.Model.Seller;
-import com.example.minionlinemarket.Model.ShoppingCart;
 import com.example.minionlinemarket.Repository.AddressRepository;
 import com.example.minionlinemarket.Repository.BuyerRepository;
 import com.example.minionlinemarket.Repository.OrderRepo;
@@ -15,11 +14,6 @@ import com.example.minionlinemarket.Repository.ShoppingCartRepo;
 import com.example.minionlinemarket.Services.BuyerService;
 import com.example.minionlinemarket.Services.OrderService;
 import com.example.minionlinemarket.Services.SellerService;
-import com.example.minionlinemarket.Model.Address;
-import com.example.minionlinemarket.Model.Buyer;
-import com.example.minionlinemarket.Model.LineItem;
-import com.example.minionlinemarket.Model.MyOrder;
-import com.example.minionlinemarket.Model.OrderStatus;
 
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
@@ -144,8 +138,7 @@ public class OrderServiceImp implements OrderService {
     public OrderDetailDto placeOrder(Long buyerId, OrderDto orderDto) {
         Buyer buyer = mapperConfiguration.convert(buyerService.findById(buyerId), Buyer.class);
         ShoppingCart shoppingCart = shoppingCartRepo.findByBuyer(buyer)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Shopping cart not found for buyer with ID: " + buyerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping cart not found for buyer with ID: " + buyerId));
         Seller seller = mapperConfiguration.convert(sellerService.findById(orderDto.getSellerId()), Seller.class);
 
         MyOrder order = new MyOrder();
@@ -167,15 +160,22 @@ public class OrderServiceImp implements OrderService {
             addressRepository.save(order.getBillingAddress());
         }
 
-        // Create a new set of line items for the order
+        // Create a new set of line items for the order and update product stock
         Set<LineItem> orderLineItems = new HashSet<>();
         for (LineItem item : shoppingCart.getLineItems()) {
             LineItem newItem = new LineItem();
-            newItem.setProduct(item.getProduct());
+            Product product = item.getProduct();
+
+            newItem.setProduct(product);
             newItem.setQuantity(item.getQuantity());
             newItem.setOrder(order);
             newItem.setShoppingCart(null);  // Clear the shopping cart ID
             orderLineItems.add(newItem);
+
+            // Update product stock quantity
+            int newStockQuantity = product.getStockQuantity() - item.getQuantity();
+            product.setStockQuantity(newStockQuantity);
+            product.setInStock(newStockQuantity > 0);
         }
         order.setLineItems(orderLineItems);
 
@@ -187,6 +187,7 @@ public class OrderServiceImp implements OrderService {
 
         return mapperConfiguration.convert(savedOrder, OrderDetailDto.class);
     }
+
 
 
     @Override

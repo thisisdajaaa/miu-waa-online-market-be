@@ -41,7 +41,12 @@ public class ReviewServiceImp implements ReviewService {
     @Override
     public List<ReviewDetailDto> getReviews() {
         return reviewRepo.findAll().stream()
-                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+                .map(review -> {
+                    ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(review, ReviewDetailDto.class);
+                    reviewDetailDto.setBuyer(review.getBuyer().getName());
+                    reviewDetailDto.setProduct(review.getProduct().getName());
+                    return reviewDetailDto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -52,8 +57,12 @@ public class ReviewServiceImp implements ReviewService {
         Buyer buyer = mapperConfiguration.convert(buyerService.findById(buyerId), Buyer.class);
         review.setProduct(product);
         review.setBuyer(buyer);
+        review.setFlagged(reviewDto.getIsFlagged());
         Review savedReview = reviewRepo.save(review);
-        return mapperConfiguration.convert(savedReview, ReviewDetailDto.class);
+        ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(savedReview, ReviewDetailDto.class);
+        reviewDetailDto.setBuyer(review.getBuyer().getName());
+        reviewDetailDto.setProduct(review.getProduct().getName());
+        return reviewDetailDto;
     }
 
     @Override
@@ -62,7 +71,10 @@ public class ReviewServiceImp implements ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("Review not found with ID: " + id));
         mapperConfiguration.modelMapper().map(reviewDto, existingReview);
         Review updatedReview = reviewRepo.save(existingReview);
-        return mapperConfiguration.convert(updatedReview, ReviewDetailDto.class);
+        ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(updatedReview, ReviewDetailDto.class);
+        reviewDetailDto.setBuyer(existingReview.getBuyer().getName());
+        reviewDetailDto.setProduct(existingReview.getProduct().getName());
+        return reviewDetailDto;
     }
 
     @Override
@@ -76,7 +88,12 @@ public class ReviewServiceImp implements ReviewService {
         Product product = mapperConfiguration.convert(productService.findById(productId), Product.class);
         Hibernate.initialize(product.getReviews());
         return product.getReviews().stream()
-                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+                .map(review -> {
+                    ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(review, ReviewDetailDto.class);
+                    reviewDetailDto.setBuyer(review.getBuyer().getName());
+                    reviewDetailDto.setProduct(review.getProduct().getName());
+                    return reviewDetailDto;
+                })
                 .collect(Collectors.toSet());
     }
 
@@ -84,13 +101,21 @@ public class ReviewServiceImp implements ReviewService {
     public ReviewDetailDto findById(Long id) {
         Review review = reviewRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Review not found with ID: " + id));
-        return mapperConfiguration.convert(review, ReviewDetailDto.class);
+        ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(review, ReviewDetailDto.class);
+        reviewDetailDto.setBuyer(review.getBuyer().getName());
+        reviewDetailDto.setProduct(review.getProduct().getName());
+        return reviewDetailDto;
     }
 
     @Override
     public List<ReviewDetailDto> getInappropriateReviews() {
-        return reviewRepo.findAllByisFlagged(true).stream()
-                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+        return reviewRepo.findAllByFlagged().stream()
+                .map(review -> {
+                    ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(review, ReviewDetailDto.class);
+                    reviewDetailDto.setBuyer(review.getBuyer().getName());
+                    reviewDetailDto.setProduct(review.getProduct().getName());
+                    return reviewDetailDto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +124,12 @@ public class ReviewServiceImp implements ReviewService {
         Buyer buyer = mapperConfiguration.convert(buyerService.findById(buyerId), Buyer.class);
         Hibernate.initialize(buyer.getReviews());
         return buyer.getReviews().stream()
-                .map(review -> mapperConfiguration.convert(review, ReviewDetailDto.class))
+                .map(review -> {
+                    ReviewDetailDto reviewDetailDto = mapperConfiguration.convert(review, ReviewDetailDto.class);
+                    reviewDetailDto.setBuyer(review.getBuyer().getName());
+                    reviewDetailDto.setProduct(review.getProduct().getName());
+                    return reviewDetailDto;
+                })
                 .collect(Collectors.toSet());
     }
 }

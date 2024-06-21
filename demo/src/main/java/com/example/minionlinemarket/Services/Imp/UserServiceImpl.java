@@ -40,6 +40,7 @@ public class UserServiceImpl implements MyUserService {
                 newseller.setEmail(user.getEmail());
                 newseller.setPassword(user.getPassword());
                 newseller.setRole(user.getRole());
+                newseller.setApproved(false);
                 sellerService.save(newseller);
             }
             if(user.getRole().toString().equals("ADMIN")){

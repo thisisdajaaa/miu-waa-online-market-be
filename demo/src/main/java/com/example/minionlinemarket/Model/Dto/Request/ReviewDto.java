@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class ReviewDto {
     private String content;
     private int rating;
-    private boolean isFlagged;
+    private Boolean isFlagged;
 }

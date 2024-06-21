@@ -38,6 +38,7 @@ public class ProductServiceImp implements ProductService {
     @Override
     public List<ProductDetailDto> findAll() {
         return productRepo.findAll().stream()
+                .filter(Product::isInStock)
                 .map(product -> {
                     Hibernate.initialize(product.getReviews());  // Initialize reviews if needed
                     return mapperConfiguration.convert(product, ProductDetailDto.class);
@@ -122,8 +123,10 @@ public class ProductServiceImp implements ProductService {
             existingProduct.setPrice(productDto.getPrice());
         if (productDto.getCategory() != null)
             existingProduct.setCategory(productDto.getCategory());
-        if (productDto.getStockQuantity() != null)
+        if (productDto.getStockQuantity() != null) {
+            existingProduct.setInStock(true);
             existingProduct.setStockQuantity(productDto.getStockQuantity());
+        }
 
         Product updatedProduct = productRepo.save(existingProduct);
         return mapperConfiguration.convert(updatedProduct, ProductDetailDto.class);

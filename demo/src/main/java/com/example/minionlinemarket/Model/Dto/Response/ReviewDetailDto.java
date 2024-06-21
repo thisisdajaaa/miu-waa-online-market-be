@@ -1,5 +1,6 @@
 package com.example.minionlinemarket.Model.Dto.Response;
 
+import com.example.minionlinemarket.Model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class ReviewDetailDto {
     private int rating;
     private boolean isFlagged;
     private Date createdDate;
+    private String buyer;
+    private String product;
 }
