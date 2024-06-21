@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BuyerDto {
-    private String username;
+    private String name;
     private String password;
     private String email;
     private Set<AddressDto> addresses; // Add this field

@@ -28,7 +28,7 @@ public class BuyerServiceImp implements BuyerService {
 
     @Autowired
     public BuyerServiceImp(BuyerRepository buyerRepository, AddressRepository addressRepository,
-            ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration) {
+                           ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration) {
         this.buyerRepository = buyerRepository;
         this.shoppingCartRepo = shoppingCartRepo;
         this.mapperConfiguration = mapperConfiguration;
@@ -38,6 +38,7 @@ public class BuyerServiceImp implements BuyerService {
     @Override
     public BuyerDetailDto save(BuyerDto buyerDto) {
         Buyer buyer = new Buyer();
+        buyer.setName(buyerDto.getName());
         buyer.setPassword(buyerDto.getPassword());
         buyer.setEmail(buyerDto.getEmail());
         buyer.setRole(buyerDto.getRole());
@@ -129,7 +130,7 @@ public class BuyerServiceImp implements BuyerService {
     private BuyerDetailDto mapToDetailDto(Buyer buyer) {
         return BuyerDetailDto.builder()
                 .id(buyer.getId())
-                .username(buyer.getUsername())
+                .name(buyer.getName())
                 .password(buyer.getPassword())
                 .email(buyer.getEmail())
                 .addresses(buyer.getAddresses().stream().map(this::mapToAddressDetailDto).collect(Collectors.toSet()))

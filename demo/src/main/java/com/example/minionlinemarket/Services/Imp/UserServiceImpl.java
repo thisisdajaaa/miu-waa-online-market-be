@@ -53,7 +53,7 @@ public class UserServiceImpl implements MyUserService {
 
             if(user.getRole().toString().equals("BUYER")){
                 BuyerDto buyer=new BuyerDto();
-                buyer.setUsername(user.getName());
+                buyer.setName(user.getName());
                 buyer.setEmail(user.getEmail());
                 buyer.setPassword(user.getPassword());
                 buyer.setRole(user.getRole());

@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 public class BuyerDetailDto {
     private Long id;
-    private String username;
+    private String name;
     private String password;
     private String email;
     private Set<AddressDetailDto> addresses;

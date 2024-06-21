@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface BuyerService {
     BuyerDetailDto save(BuyerDto buyerDto);
+    void deleteBuyer(Long id);
     BuyerDetailDto findById(Long id);
     List<BuyerDetailDto> findAll();
-    void deleteBuyer(Long id);
 }
+
