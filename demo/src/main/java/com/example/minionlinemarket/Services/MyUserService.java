@@ -1,7 +1,7 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.Model.MyUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import com.example.minionlinemarket.Model.MyUser;
 
 import java.util.List;
 

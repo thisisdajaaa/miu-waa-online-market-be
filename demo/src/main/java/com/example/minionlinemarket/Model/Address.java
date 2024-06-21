@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -24,6 +22,6 @@ public class Address {
     private String postalCode;
     private String country;
 
-    @ManyToMany(mappedBy = "addresses", fetch = FetchType.LAZY)
-    private Set<com.example.minionlinemarket.Model.Buyer> buyers;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Buyer buyer;
 }

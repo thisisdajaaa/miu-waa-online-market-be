@@ -1,26 +1,68 @@
 package com.example.minionlinemarket.Services.Imp;
 
+import com.example.minionlinemarket.Model.Admin;
+import com.example.minionlinemarket.Model.Buyer;
+import com.example.minionlinemarket.Model.Dto.Request.AdminDTO;
+import com.example.minionlinemarket.Model.Dto.Request.BuyerDto;
+import com.example.minionlinemarket.Repository.AdminRepo;
 import com.example.minionlinemarket.Repository.UserRepo;
+import com.example.minionlinemarket.Services.BuyerService;
 import com.example.minionlinemarket.Services.MyUserService;
+import com.example.minionlinemarket.Services.SellerService;
+import com.example.minionlinemarket.Model.Dto.Request.SellerDto;
 import com.example.minionlinemarket.Model.MyUser;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-//import com.sendgrid.*;
-//import java.io.IOException;
 
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements MyUserService {
     private UserRepo userRepository;
+    private final SellerService sellerService;
+    private final AdminRepo adminRepo;
+    private final BuyerService buyerService;
 
-    public UserServiceImpl(UserRepo userRepository) {
+    public UserServiceImpl(UserRepo userRepository, SellerService sellerService, AdminRepo adminRepo, BuyerService buyerService) {
         this.userRepository = userRepository;
+        this.sellerService = sellerService;
+        this.adminRepo = adminRepo;
+        this.buyerService = buyerService;
     }
 
     @Override
     public MyUser save(MyUser user) {
-        return userRepository.save(user);
+
+            System.out.println("here is the role"+user.getRole());
+            if(user.getRole().toString().equals("SELLER")){
+                SellerDto newseller = new SellerDto();
+                newseller.setName(user.getName());
+                newseller.setEmail(user.getEmail());
+                newseller.setPassword(user.getPassword());
+                newseller.setRole(user.getRole());
+                sellerService.save(newseller);
+            }
+            if(user.getRole().toString().equals("ADMIN")){
+                Admin admin = new Admin();
+                admin.setName(user.getName());
+                admin.setEmail(user.getEmail());
+                admin.setRole(user.getRole());
+                admin.setPassword(user.getPassword());
+                adminRepo.save(admin);
+            }
+
+            if(user.getRole().toString().equals("BUYER")){
+                BuyerDto buyer=new BuyerDto();
+                buyer.setUsername(user.getName());
+                buyer.setEmail(user.getEmail());
+                buyer.setPassword(user.getPassword());
+                buyer.setRole(user.getRole());
+                buyerService.save(buyer);
+            }
+
+
+
+        return user;
     }
 
 

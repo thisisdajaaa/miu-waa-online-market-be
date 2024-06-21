@@ -53,6 +53,8 @@ public class SellerServiceImp implements SellerService {
         return mapperConfiguration.convert(seller, SellerDetailDto.class);
     }
 
+
+
     @Override
     public SellerDetailDto save(SellerDto sellerDto) {
         Seller seller = mapperConfiguration.convert(sellerDto, Seller.class);
@@ -74,6 +76,7 @@ public class SellerServiceImp implements SellerService {
         Seller seller = mapperConfiguration.convert(sellerDetailDto, Seller.class);
         sellerRepo.delete(seller);
     }
+
 
     @Override
     public List<SellerDetailDto> findAllPending() {
@@ -99,6 +102,11 @@ public class SellerServiceImp implements SellerService {
         Seller seller = sellerRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Seller not found with ID: " + id));
         delete(mapperConfiguration.convert(seller, SellerDetailDto.class));
+    }
+
+    @Override
+    public int numberofproducts(Long id) {
+        return findById(id).getProducts().size();
     }
 
     @Override

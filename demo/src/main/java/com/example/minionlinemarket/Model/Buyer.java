@@ -6,9 +6,12 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.BatchSize;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Getter
 @Setter
@@ -16,21 +19,21 @@ import org.hibernate.annotations.BatchSize;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Buyer extends MyUser {
-
-//    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    @BatchSize(size = 10)
-//    private Set<Order> orders;
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
+    @JsonManagedReference
+    private Set<MyOrder> orders = new HashSet<>(); // Initialize the orders set
 
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
-    private Set<com.example.minionlinemarket.Model.Review> reviews;
+    @JsonManagedReference
+    private Set<Review> reviews = new HashSet<>(); // Initialize the reviews set
 
     @OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private com.example.minionlinemarket.Model.ShoppingCart shoppingCart;
+    @JsonManagedReference
+    private ShoppingCart shoppingCart;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "buyer_address",
-            joinColumns = @JoinColumn(name = "buyer_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private Set<Address> addresses;
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Address> addresses = new HashSet<>();
 }

@@ -1,7 +1,7 @@
 package com.example.minionlinemarket.Config;
 
 import com.example.minionlinemarket.Services.MyUserService;
-import com.example.minionlinemarket.filters.JWTFilter;
+import com.example.minionlinemarket.Filter.JWTFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,15 +23,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private MyUserService myUserService;
     private JWTFilter jwtFilters;
-    private final String[] roles = {"BUYER", "SELLER", "ADMIN"};
+    private final String[] roles = { "BUYER", "SELLER", "ADMIN" };
 
     public SecurityConfig(
             MyUserService myUserService,
-            JWTFilter jwtFilters
-    ) {
+            JWTFilter jwtFilters) {
         this.myUserService = myUserService;
         this.jwtFilters = jwtFilters;
     }
+
+    // @Bean
+    // public MyUserService getUserDetailsService() {
+    // return myUserService;
+    // }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -45,11 +49,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
-                                .anyRequest().authenticated()
-                        )
-                )
+                                .anyRequest().authenticated()))
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(daoAuthenticationProvider())
                 .addFilterBefore(jwtFilters, UsernamePasswordAuthenticationFilter.class);
@@ -65,14 +67,14 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception {
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        // daoAuthenticationProvider.setUserDetailsService(getUserDetailsService());
         daoAuthenticationProvider.setUserDetailsService(myUserService);
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return daoAuthenticationProvider;

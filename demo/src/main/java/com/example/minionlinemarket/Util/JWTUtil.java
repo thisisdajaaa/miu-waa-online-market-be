@@ -1,4 +1,4 @@
-package com.example.minionlinemarket.utils;
+package com.example.minionlinemarket.Util;
 
 import com.example.minionlinemarket.Services.MyUserService;
 import io.jsonwebtoken.*;
@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;

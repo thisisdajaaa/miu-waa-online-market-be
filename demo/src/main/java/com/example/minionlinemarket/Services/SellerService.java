@@ -15,4 +15,5 @@ public interface SellerService {
     List<SellerDetailDto> findAllPending();
     void approveSeller(Long id);
     void disapproveSeller(Long id);
+    int numberofproducts(Long id);
 }

@@ -17,6 +17,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Seller extends MyUser {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -27,7 +28,7 @@ public class Seller extends MyUser {
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
     @JsonManagedReference
-    private Set<MyOrder> myOrders = new HashSet<>();
+    private Set<MyOrder> MyOrders = new HashSet<>();
 
     private boolean isApproved;
 }
