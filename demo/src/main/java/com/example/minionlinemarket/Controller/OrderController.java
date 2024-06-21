@@ -46,7 +46,9 @@ public class OrderController {
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create")
     public ResponseEntity<OrderDetailDto> createOrder(@RequestBody OrderDto orderDto) {
-        System.out.println("hello  "+orderDto.getOrderDate());
+//        System.out.println("hello  "+orderDto.getOrderDate());
+
+
         OrderDetailDto savedOrder = orderService.save(orderDto);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
@@ -93,7 +95,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")
-    @PutMapping("/order-status/{orderId}")
+    @PutMapping("/myorderstatus/{orderId}")
     public ResponseEntity<OrderDetailDto> updateOrderStatus(@PathVariable("orderId") Long orderId,@RequestBody OrderStatus status)
     {
        System.out.println("I GOT HERE!");

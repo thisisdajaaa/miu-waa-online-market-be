@@ -66,9 +66,37 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String register(UserDto userDto) {
-        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        userService.save(mapperConfiguration.convert(userDto, MyUser.class));
-        return "Success! Your account has been registered";
+//
+//        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+//        userService.save(mapperConfiguration.convert(userDto, MyUser.class));
+//        return "Success! Your account has been registered";
+        try {
+            userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+            userService.save(mapperConfiguration.convert(userDto, MyUser.class));
+            return "Success! Your account has been registered";
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(userDto.getPassword() == null){
+                return "you have to enter a password";
+            }
+            if(userDto.getRole()== null){
+                return "you have to select a role";
+            }
+            if(userDto.getEmail() == null){
+                return "you have to enter an email";
+            }
+            String fullMessage = e.getMessage();
+            System.out.println("Error: " + fullMessage);
+
+            // Extract and return a specific part of the exception message
+            // For example, let's assume we only want to return the part before a colon ':'
+            String specificPart = fullMessage.split(":")[2];
+            String lastone=specificPart.split("]")[0];
+            return "Error! " + lastone;
+
+
+
+        }
     }
 
     @Override
