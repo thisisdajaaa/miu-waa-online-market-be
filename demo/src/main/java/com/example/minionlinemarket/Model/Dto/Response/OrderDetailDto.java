@@ -21,4 +21,28 @@ public class OrderDetailDto {
     private Set<LineItemDetailDto> lineItems;
     private Date orderDate;
     private OrderStatus status;
+
+    public String getShippingAddress() {
+        if (shippingAddress == null)
+            return "";
+
+        return String.format("%s, %s, %s, %s, %s",
+                shippingAddress.getStreet(),
+                shippingAddress.getCity(),
+                shippingAddress.getState(),
+                shippingAddress.getCountry(),
+                shippingAddress.getPostalCode());
+    }
+
+    public String getBillingAddress() {
+        if (billingAddress == null)
+            return "";
+
+        return String.format("%s, %s, %s, %s, %s",
+                billingAddress.getStreet(),
+                billingAddress.getCity(),
+                billingAddress.getState(),
+                billingAddress.getCountry(),
+                billingAddress.getPostalCode());
+    }
 }

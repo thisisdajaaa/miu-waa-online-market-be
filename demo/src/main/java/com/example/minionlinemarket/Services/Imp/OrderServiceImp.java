@@ -296,7 +296,7 @@ public class OrderServiceImp implements OrderService {
 
         String[] fieldNames = { "Date", "Total amount", "Shipping address", "Billing address" };
         String[] fieldValues = { order.getOrderDate().toString(), String.valueOf(order.getTotalAmount()),
-                order.getShippingAddress().toString(), order.getBillingAddress().toString() };
+                order.getShippingAddress(), order.getBillingAddress() };
 
         for (int i = 0; i < fieldNames.length; i++) {
             PdfPCell cell = new PdfPCell(new Phrase(fieldNames[i], bodyFont));
