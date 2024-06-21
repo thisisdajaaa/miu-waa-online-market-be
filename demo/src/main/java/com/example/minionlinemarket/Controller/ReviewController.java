@@ -29,16 +29,19 @@ public class ReviewController {
         List<ReviewDetailDto> reviews = reviewService.getReviews();
         return ResponseEntity.ok(reviews);
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER','BUYER')")
     @GetMapping("/{id}")
     public ResponseEntity<ReviewDetailDto> getReviewById(@PathVariable Long id) {
         ReviewDetailDto review = reviewService.findById(id);
         return ResponseEntity.ok(review);
     }
+
     @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/products/{productId}")
-    public ResponseEntity<ReviewDetailDto> addReview(@PathVariable Long productId, @RequestBody ReviewDto reviewDto) {
-        ReviewDetailDto addedReview = reviewService.addReview(productId, reviewDto);
+    @PostMapping("/buyers/{buyerId}/products/{productId}")
+    public ResponseEntity<ReviewDetailDto> addReview(@PathVariable Long buyerId, @PathVariable Long productId,
+            @RequestBody ReviewDto reviewDto) {
+        ReviewDetailDto addedReview = reviewService.addReview(buyerId, productId, reviewDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedReview);
     }
 
@@ -57,13 +60,13 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER','BUYER')")
     @GetMapping("/products/{productId}")
     public ResponseEntity<Set<ReviewDetailDto>> getReviewsForSpecificProduct(@PathVariable Long productId) {
         Set<ReviewDetailDto> reviews = reviewService.getReviewsForSpecificProduct(productId);
         return ResponseEntity.ok(reviews);
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/inappropriates")
     public ResponseEntity<List<ReviewDetailDto>> getInappropriateReviews() {

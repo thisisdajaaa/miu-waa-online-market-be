@@ -2,12 +2,24 @@ package com.example.minionlinemarket.Services.Imp;
 
 import com.example.minionlinemarket.Config.MapperConfiguration;
 import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
+import com.example.minionlinemarket.Model.Dto.Response.AddressDetailDto;
+import com.example.minionlinemarket.Model.Dto.Response.LineItemDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
+import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
 import com.example.minionlinemarket.Model.Seller;
+import com.example.minionlinemarket.Model.ShoppingCart;
+import com.example.minionlinemarket.Repository.BuyerRepository;
 import com.example.minionlinemarket.Repository.OrderRepo;
+import com.example.minionlinemarket.Repository.ShoppingCartRepo;
+import com.example.minionlinemarket.Services.BuyerService;
 import com.example.minionlinemarket.Services.OrderService;
 import com.example.minionlinemarket.Services.SellerService;
+import com.example.minionlinemarket.Model.Address;
+import com.example.minionlinemarket.Model.Buyer;
+import com.example.minionlinemarket.Model.LineItem;
 import com.example.minionlinemarket.Model.MyOrder;
+import com.example.minionlinemarket.Model.OrderStatus;
+
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +31,31 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.core.io.ByteArrayResource;
 import java.io.ByteArrayOutputStream;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 @Service
 @Transactional
 public class OrderServiceImp implements OrderService {
     private final OrderRepo orderRepo;
     private final SellerService sellerService;
+    private final BuyerService buyerService;
+    private final ShoppingCartRepo shoppingCartRepo;
     private final MapperConfiguration mapperConfiguration;
 
     @Autowired
-    public OrderServiceImp(OrderRepo orderRepo, SellerService sellerService, MapperConfiguration mapperConfiguration) {
+    private BuyerRepository buyerRepository;
+
+    @Autowired
+    public OrderServiceImp(OrderRepo orderRepo, SellerService sellerService, BuyerService buyerService,
+            ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration) {
         this.orderRepo = orderRepo;
         this.sellerService = sellerService;
+        this.buyerService = buyerService;
+        this.shoppingCartRepo = shoppingCartRepo;
         this.mapperConfiguration = mapperConfiguration;
     }
 
@@ -49,7 +70,8 @@ public class OrderServiceImp implements OrderService {
     public OrderDetailDto findById(Long id) {
         MyOrder order = orderRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
-        Hibernate.initialize(order.getSeller());  // Initialize seller if needed
+        Hibernate.initialize(order.getSeller());
+        Hibernate.initialize(order.getBuyer());
         return mapperConfiguration.convert(order, OrderDetailDto.class);
     }
 
@@ -57,7 +79,9 @@ public class OrderServiceImp implements OrderService {
     public OrderDetailDto save(OrderDto orderDto) {
         MyOrder order = mapperConfiguration.convert(orderDto, MyOrder.class);
         Seller seller = mapperConfiguration.convert(sellerService.findById(orderDto.getSellerId()), Seller.class);
+        Buyer buyer = mapperConfiguration.convert(buyerService.findById(orderDto.getBuyerId()), Buyer.class);
         order.setSeller(seller);
+        order.setBuyer(buyer);
         MyOrder savedOrder = orderRepo.save(order);
         return mapperConfiguration.convert(savedOrder, OrderDetailDto.class);
     }
@@ -88,8 +112,130 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public Set<OrderDetailDto> findOrderByBuyerId(Long id) {
-        // Implement buyer logic
-        return Set.of();
+        Buyer buyer = mapperConfiguration.convert(buyerService.findById(id), Buyer.class);
+        Hibernate.initialize(buyer.getOrders());
+        return buyer.getOrders().stream()
+                .map(order -> mapperConfiguration.convert(order, OrderDetailDto.class))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public OrderDetailDto placeOrder(Long buyerId, OrderDto orderDto) {
+        Buyer buyer = mapperConfiguration.convert(buyerService.findById(buyerId), Buyer.class);
+        ShoppingCart shoppingCart = shoppingCartRepo.findByBuyer(buyer)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Shopping cart not found for buyer with ID: " + buyerId));
+        Seller seller = mapperConfiguration.convert(sellerService.findById(orderDto.getSellerId()), Seller.class);
+
+        MyOrder order = new MyOrder();
+        order.setBuyer(buyer);
+        order.setSeller(seller);
+        order.setOrderDate(new Date());
+        order.setStatus(OrderStatus.PLACED);
+        order.setTotalAmount(shoppingCart.getLineItems().stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity()).sum());
+        order.setShippingAddress(convertToAddress(orderDto.getShippingAddress()));
+        order.setBillingAddress(convertToAddress(orderDto.getBillingAddress()));
+
+        // Create a new set of line items for the order
+        Set<LineItem> orderLineItems = new HashSet<>();
+        for (LineItem item : shoppingCart.getLineItems()) {
+            LineItem newItem = new LineItem();
+            newItem.setProduct(item.getProduct());
+            newItem.setQuantity(item.getQuantity());
+            newItem.setOrder(order);
+            orderLineItems.add(newItem);
+        }
+        order.setLineItems(orderLineItems);
+
+        MyOrder savedOrder = orderRepo.save(order);
+
+        // Clear shopping cart
+        shoppingCart.getLineItems().clear();
+        shoppingCartRepo.save(shoppingCart);
+
+        return mapperConfiguration.convert(savedOrder, OrderDetailDto.class);
+    }
+
+    @Override
+    @Transactional()
+    public Set<OrderDetailDto> getOrdersByBuyerId(Long buyerId) {
+        Buyer buyer = buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found"));
+
+        // Fetch orders to avoid lazy loading issues
+        Hibernate.initialize(buyer.getOrders());
+
+        // Ensure orders set is not null
+        Set<MyOrder> orders = buyer.getOrders();
+        if (orders == null) {
+            orders = new HashSet<>();
+        }
+
+        return orders.stream()
+                .map(order -> mapperConfiguration.convert(order, OrderDetailDto.class))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void cancelOrder(Long buyerId, Long orderId) {
+        MyOrder order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + orderId));
+        if (order.getBuyer().getId().equals(buyerId) && order.getStatus() == OrderStatus.PLACED) {
+            order.setStatus(OrderStatus.CANCELED);
+            orderRepo.save(order);
+        } else {
+            throw new IllegalStateException("Order cannot be cancelled");
+        }
+    }
+
+    private Address convertToAddress(AddressDetailDto addressDetailDto) {
+        if (addressDetailDto == null) {
+            return null;
+        }
+        Address address = new Address();
+        address.setStreet(addressDetailDto.getStreet());
+        address.setCity(addressDetailDto.getCity());
+        address.setState(addressDetailDto.getState());
+        address.setPostalCode(addressDetailDto.getPostalCode());
+        address.setCountry(addressDetailDto.getCountry());
+        return address;
+    }
+
+    private AddressDetailDto mapToAddressDetailDto(Address address) {
+        if (address == null) {
+            return null;
+        }
+        return AddressDetailDto.builder()
+                .id(address.getId())
+                .street(address.getStreet())
+                .city(address.getCity())
+                .state(address.getState())
+                .postalCode(address.getPostalCode())
+                .country(address.getCountry())
+                .build();
+    }
+
+    private OrderDetailDto mapToOrderDetailDto(MyOrder order) {
+        return OrderDetailDto.builder()
+                .id(order.getId())
+                .totalAmount(order.getTotalAmount())
+                .shippingAddress(
+                        order.getShippingAddress() != null ? mapToAddressDetailDto(order.getShippingAddress()) : null)
+                .billingAddress(
+                        order.getBillingAddress() != null ? mapToAddressDetailDto(order.getBillingAddress()) : null)
+                .lineItems(order.getLineItems().stream().map(this::mapToLineItemDetailDto).collect(Collectors.toSet()))
+                .build();
+    }
+
+    private LineItemDetailDto mapToLineItemDetailDto(LineItem lineItem) {
+        return LineItemDetailDto.builder()
+                .id(lineItem.getId())
+                .quantity(lineItem.getQuantity())
+                .product(mapperConfiguration.convert(lineItem.getProduct(), ProductDetailDto.class)) // Convert product
+                                                                                                     // to
+                                                                                                     // ProductDetailDto
+                .build();
     }
 
     @Override
@@ -116,8 +262,9 @@ public class OrderServiceImp implements OrderService {
         table.setSpacingBefore(10f);
         table.setSpacingAfter(10f);
 
-        String[] fieldNames = {"Date", "Total amount", "Shipping address", "Billing address"};
-        String[] fieldValues = {order.getOrderDate().toString(), String.valueOf(order.getTotalAmount()), order.getShippingAddress(), order.getBillingAddress()};
+        String[] fieldNames = { "Date", "Total amount", "Shipping address", "Billing address" };
+        String[] fieldValues = { order.getOrderDate().toString(), String.valueOf(order.getTotalAmount()),
+                order.getShippingAddress().toString(), order.getBillingAddress().toString() };
 
         for (int i = 0; i < fieldNames.length; i++) {
             PdfPCell cell = new PdfPCell(new Phrase(fieldNames[i], bodyFont));

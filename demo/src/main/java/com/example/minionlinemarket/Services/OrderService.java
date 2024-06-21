@@ -10,11 +10,25 @@ import java.util.Set;
 
 public interface OrderService {
     List<OrderDetailDto> findAll();
+
     OrderDetailDto findById(Long id);
+
     OrderDetailDto save(OrderDto orderDto);
+
     void delete(OrderDetailDto orderDetailDto);
+
     Set<OrderDetailDto> findOrderBySellerId(Long id);
+
     Set<OrderDetailDto> findOrderByBuyerId(Long id);
+
     OrderDetailDto update(Long id, OrderDto orderDto);
+
+    // Add the missing method declarations
+    OrderDetailDto placeOrder(Long buyerId, OrderDto orderDto);
+
+    Set<OrderDetailDto> getOrdersByBuyerId(Long buyerId);
+
+    void cancelOrder(Long buyerId, Long orderId);
+
     ByteArrayResource generateReceipt(Long id) throws DocumentException;
 }

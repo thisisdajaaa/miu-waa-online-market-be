@@ -8,10 +8,18 @@ import java.util.Set;
 
 public interface ReviewService {
     List<ReviewDetailDto> getReviews();
-    ReviewDetailDto addReview(Long productId, ReviewDto reviewDto);
+
+    ReviewDetailDto addReview(Long buyerId, Long productId, ReviewDto reviewDto);
+
     ReviewDetailDto updateReview(Long id, ReviewDto reviewDto);
+
     void deleteReview(ReviewDetailDto reviewDetailDto);
+
     Set<ReviewDetailDto> getReviewsForSpecificProduct(Long productId);
+
     ReviewDetailDto findById(Long id);
+
     List<ReviewDetailDto> getInappropriateReviews();
+
+    Set<ReviewDetailDto> getReviewsByBuyerId(Long buyerId);
 }

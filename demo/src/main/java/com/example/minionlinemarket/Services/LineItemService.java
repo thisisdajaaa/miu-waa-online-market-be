@@ -1,12 +1,12 @@
 package com.example.minionlinemarket.Services;
 
-import com.example.minionlinemarket.Model.LineItem;
-
-import java.util.List;
+import com.example.minionlinemarket.Model.Dto.Request.LineItemDto;
+import com.example.minionlinemarket.Model.Dto.Response.LineItemDetailDto;
 
 public interface LineItemService {
-    List<LineItem> findAll();
-    LineItem findById(Long id);
-    // i need to discuss LineItem
+    LineItemDetailDto addLineItemToCart(Long buyerId, LineItemDto lineItemDto);
 
+    LineItemDetailDto updateLineItemInCart(Long buyerId, Long lineItemId, LineItemDto lineItemDto);
+
+    void removeLineItemFromCart(Long buyerId, Long lineItemId);
 }
