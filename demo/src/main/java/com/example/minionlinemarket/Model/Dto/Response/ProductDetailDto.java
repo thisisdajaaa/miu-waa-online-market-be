@@ -25,6 +25,7 @@ public class ProductDetailDto {
     private Double discount;
     private String productType;
     private String color;
+    private Boolean isInStock;
     private String sizeOrDimensions;
     private String material;
     private String features;

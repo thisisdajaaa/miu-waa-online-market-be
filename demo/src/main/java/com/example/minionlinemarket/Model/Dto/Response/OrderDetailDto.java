@@ -21,6 +21,9 @@ public class OrderDetailDto {
     private Set<LineItemDetailDto> lineItems;
     private Date orderDate;
     private OrderStatus status;
+    private String seller;
+    private String buyer;
+    private String last4Digits;
 
     public String getShippingAddress() {
         if (shippingAddress == null)

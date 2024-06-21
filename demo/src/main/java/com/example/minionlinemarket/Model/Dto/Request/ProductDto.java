@@ -24,6 +24,7 @@ public class ProductDto {
     private String brand;
     private Double rating;
     private Double discount;
+    private Boolean isInStock;
     private String productType;
     private String color;
     private String sizeOrDimensions;

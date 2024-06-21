@@ -43,8 +43,8 @@ public class OrderServiceImp implements OrderService {
 
     @Autowired
     public OrderServiceImp(OrderRepo orderRepo, SellerService sellerService, BuyerService buyerService,
-                           ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration,
-                           AddressRepository addressRepository, SellerRepo sellerRepo) {
+            ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration,
+            AddressRepository addressRepository, SellerRepo sellerRepo) {
         this.orderRepo = orderRepo;
         this.sellerService = sellerService;
         this.buyerService = buyerService;
@@ -67,7 +67,13 @@ public class OrderServiceImp implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         Hibernate.initialize(order.getSeller());
         Hibernate.initialize(order.getBuyer());
-        return mapperConfiguration.convert(order, OrderDetailDto.class);
+        Hibernate.initialize(order.getLineItems());
+        OrderDetailDto orderDetailDto = mapperConfiguration.convert(order, OrderDetailDto.class);
+        orderDetailDto.setSeller(order.getSeller().getName());
+        orderDetailDto.setBuyer(order.getBuyer().getName());
+        orderDetailDto.setLast4Digits(
+                order.getPayment().getCardNumber().substring(order.getPayment().getCardNumber().length() - 4));
+        return orderDetailDto;
     }
 
     @Override
@@ -131,6 +137,7 @@ public class OrderServiceImp implements OrderService {
                 .map(order -> mapperConfiguration.convert(order, OrderDetailDto.class))
                 .collect(Collectors.toSet());
     }
+
 
     @Override
     public OrderDetailDto placeOrder(Long buyerId, OrderDto orderDto) {
@@ -222,14 +229,14 @@ public class OrderServiceImp implements OrderService {
 
     private Address convertToAddress(AddressDetailDto addressDetailDto) {
         if (addressDetailDto == null) {
-            return null;
-        }
-        Address address = new Address();
+     
+
         address.setStreet(addressDetailDto.getStreet());
         address.setCity(addressDetailDto.getCity());
         address.setState(addressDetailDto.getState());
         address.setPostalCode(addressDetailDto.getPostalCode());
-        address.setCountry(addressDetailDto.getCountry());
+        address.setCountry(ad
+                        dressDetailDto.getCountry());
         return address;
     }
 
@@ -260,7 +267,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     private LineItemDetailDto mapToLineItemDetailDto(LineItem lineItem) {
-        return LineItemDetailDto.builder()
+        return LineItemDetailDto.builder() 
                 .id(lineItem.getId())
                 .quantity(lineItem.getQuantity())
                 .product(mapperConfiguration.convert(lineItem.getProduct(), ProductDetailDto.class)) // Convert product
@@ -278,8 +285,6 @@ public class OrderServiceImp implements OrderService {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        PdfWriter.getInstance(document, out);
-        document.open();
 
         Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
         Font bodyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
@@ -319,4 +324,4 @@ public class OrderServiceImp implements OrderService {
         order.setStatus(status);
         return mapperConfiguration.convert(orderRepo.save(order), OrderDetailDto.class);
     }
-}
+} 

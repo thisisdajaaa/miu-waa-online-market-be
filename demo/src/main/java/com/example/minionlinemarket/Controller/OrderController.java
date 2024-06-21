@@ -1,6 +1,7 @@
 package com.example.minionlinemarket.Controller;
 
 import com.example.minionlinemarket.Model.Dto.Request.OrderDto;
+import com.example.minionlinemarket.Model.Dto.Request.OrderStatusDto;
 import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
 import com.example.minionlinemarket.Model.OrderStatus;
 import com.example.minionlinemarket.Services.OrderService;
@@ -96,10 +97,11 @@ public class OrderController {
 
     @PreAuthorize("hasAnyAuthority('SELLER','ADMIN')")
     @PutMapping("/myorderstatus/{orderId}")
-    public ResponseEntity<OrderDetailDto> updateOrderStatus(@PathVariable("orderId") Long orderId,@RequestBody OrderStatus status)
+    public ResponseEntity<OrderDetailDto> updateOrderStatus(@PathVariable("orderId") Long orderId,
+                                                            @RequestBody OrderStatusDto status)
     {
        System.out.println("I GOT HERE!");
-        OrderDetailDto order = orderService.updateOrderStatus(orderId, status);
+        OrderDetailDto order = orderService.updateOrderStatus(orderId, status.getOrderStatus());
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
