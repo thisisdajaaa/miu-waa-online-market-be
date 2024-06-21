@@ -229,14 +229,14 @@ public class OrderServiceImp implements OrderService {
 
     private Address convertToAddress(AddressDetailDto addressDetailDto) {
         if (addressDetailDto == null) {
-     
-
+            return null;
+        }
+        Address address = new Address();
         address.setStreet(addressDetailDto.getStreet());
         address.setCity(addressDetailDto.getCity());
         address.setState(addressDetailDto.getState());
         address.setPostalCode(addressDetailDto.getPostalCode());
-        address.setCountry(ad
-                        dressDetailDto.getCountry());
+        address.setCountry(addressDetailDto.getCountry());
         return address;
     }
 
@@ -267,7 +267,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     private LineItemDetailDto mapToLineItemDetailDto(LineItem lineItem) {
-        return LineItemDetailDto.builder() 
+        return LineItemDetailDto.builder()
                 .id(lineItem.getId())
                 .quantity(lineItem.getQuantity())
                 .product(mapperConfiguration.convert(lineItem.getProduct(), ProductDetailDto.class)) // Convert product
@@ -285,6 +285,8 @@ public class OrderServiceImp implements OrderService {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
+        PdfWriter.getInstance(document, out);
+        document.open();
 
         Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
         Font bodyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
@@ -300,7 +302,7 @@ public class OrderServiceImp implements OrderService {
 
         String[] fieldNames = { "Date", "Total amount", "Shipping address", "Billing address" };
         String[] fieldValues = { order.getOrderDate().toString(), String.valueOf(order.getTotalAmount()),
-                order.getShippingAddress(), order.getBillingAddress() };
+                order.getShippingAddress().toString(), order.getBillingAddress().toString() };
 
         for (int i = 0; i < fieldNames.length; i++) {
             PdfPCell cell = new PdfPCell(new Phrase(fieldNames[i], bodyFont));
@@ -324,4 +326,4 @@ public class OrderServiceImp implements OrderService {
         order.setStatus(status);
         return mapperConfiguration.convert(orderRepo.save(order), OrderDetailDto.class);
     }
-} 
+}
