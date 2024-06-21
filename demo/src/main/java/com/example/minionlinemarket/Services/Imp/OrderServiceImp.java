@@ -7,10 +7,7 @@ import com.example.minionlinemarket.Model.Dto.Response.AddressDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.LineItemDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.OrderDetailDto;
 import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
-import com.example.minionlinemarket.Repository.AddressRepository;
-import com.example.minionlinemarket.Repository.BuyerRepository;
-import com.example.minionlinemarket.Repository.OrderRepo;
-import com.example.minionlinemarket.Repository.ShoppingCartRepo;
+import com.example.minionlinemarket.Repository.*;
 import com.example.minionlinemarket.Services.BuyerService;
 import com.example.minionlinemarket.Services.OrderService;
 import com.example.minionlinemarket.Services.SellerService;
@@ -39,19 +36,22 @@ public class OrderServiceImp implements OrderService {
     private final ShoppingCartRepo shoppingCartRepo;
     private final MapperConfiguration mapperConfiguration;
     private final AddressRepository addressRepository;
+    private final SellerRepo sellerRepo;
 
     @Autowired
     private BuyerRepository buyerRepository;
 
     @Autowired
     public OrderServiceImp(OrderRepo orderRepo, SellerService sellerService, BuyerService buyerService,
-                           ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration, AddressRepository addressRepository) {
+                           ShoppingCartRepo shoppingCartRepo, MapperConfiguration mapperConfiguration,
+                           AddressRepository addressRepository, SellerRepo sellerRepo) {
         this.orderRepo = orderRepo;
         this.sellerService = sellerService;
         this.buyerService = buyerService;
         this.shoppingCartRepo = shoppingCartRepo;
         this.mapperConfiguration = mapperConfiguration;
         this.addressRepository = addressRepository;
+        this.sellerRepo = sellerRepo;
     }
 
     @Override
@@ -118,18 +118,16 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public Set<OrderDetailDto> findOrderBySellerId(Long id) {
-        Seller seller = mapperConfiguration.convert(sellerService.findById(id), Seller.class);
-        Hibernate.initialize(seller.getMyOrders());
-        return seller.getMyOrders().stream()
+        List<MyOrder> orders = orderRepo.findBySeller_Id(id);
+        return orders.stream()
                 .map(order -> mapperConfiguration.convert(order, OrderDetailDto.class))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Set<OrderDetailDto> findOrderByBuyerId(Long id) {
-        Buyer buyer = mapperConfiguration.convert(buyerService.findById(id), Buyer.class);
-        Hibernate.initialize(buyer.getOrders());
-        return buyer.getOrders().stream()
+        List<MyOrder> orders = orderRepo.findByBuyer_Id(id);
+        return orders.stream()
                 .map(order -> mapperConfiguration.convert(order, OrderDetailDto.class))
                 .collect(Collectors.toSet());
     }
