@@ -28,6 +28,7 @@ public class AuthController {
         this.userService = userService;
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/login")
     public String login(@RequestBody MyUser user, HttpServletResponse response) {
         // set accessToken to cookie header
@@ -44,6 +45,7 @@ public class AuthController {
         return authService.login(user).get("msg");
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/register")
     public String postUser(@RequestBody MyUser user) {
         return authService.register(user);

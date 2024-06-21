@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private MyUserService myUserService;
     private JWTFilter jwtFilters;
-    private final String[] roles = {"BUYER", "SELLER", "ADMIN"};
+//    private final String[] roles = {"BUYER", "SELLER", "ADMIN"};
 
     public SecurityConfig(
             MyUserService myUserService,
@@ -46,6 +46,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/docs/**").permitAll()
+                                .requestMatchers("/api/v1/docs.html").permitAll()
+                                .requestMatchers("/api/v1/swagger-ui/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                         )

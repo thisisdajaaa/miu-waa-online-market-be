@@ -36,6 +36,12 @@ public class UserController {
         myUserService.deleteById(id);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public void getUser(@PathVariable long id) {
+        myUserService.findById(id);
+    }
+
     @PreAuthorize("hasAnyAuthority('BUYER', 'SELLER', 'ADMIN')")
     @GetMapping("/showMe")
     public MyUser showMe() {

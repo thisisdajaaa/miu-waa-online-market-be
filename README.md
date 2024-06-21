@@ -194,3 +194,36 @@ https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
 };
 
 ```
+
+## DOCUMENTATION
+- End points have been documented using openAPI
+- However, the documentation will always default to the spring configuration end points
+- A work around has been provided 
+![API-DOC-JSON]("http://localhost:8080/api/v1/docs")
+![API-DOC-UI]("http://localhost:8080/api/v1/docs.html")
+
+- Documentation with openAPI has been added to the project. The following dependencies have been added to the project
+```
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+    <version>2.1.0</version>
+</dependency>
+```
+- 
+![Documentation]("http://localhost:8080/swagger-ui/index.html")
+
+- Added this to the application.properties file to ensure that the documentation is available
+```
+#Documentation
+#customize the documentation path(JSON file)
+springdoc.api-docs.path=/api/v1/docs
+springdoc.swagger-ui.path=/api/v1/docs.html
+```
+
+- The following has been added to the security configuration to ensure that the documentation is available
+```
+      .requestMatchers("/api/v1/docs/**").permitAll()
+                                .requestMatchers("/api/v1/docs.html").permitAll()
+                                .requestMatchers("/api/v1/swagger-ui/**").permitAll()
+```
