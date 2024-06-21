@@ -80,6 +80,7 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('BUYER','ADMIN','SELLER')")
     @GetMapping("/receipt/{id}")
     public ResponseEntity<ByteArrayResource> generateReceipt(@PathVariable("id") Long id) throws DocumentException,
             IOException {
