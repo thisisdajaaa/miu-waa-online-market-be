@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ProductService {
-    List<ProductDetailDto> findAll();
+    List<ProductDetailDto> findAll(String category);
     Set<ProductDetailDto> findAllProductsForSpecificSeller(Long sellerId, Map<String, String> filters);
     ProductDetailDto findById(Long id);
     ProductDetailDto save(Long sellerId, ProductDto productDto);

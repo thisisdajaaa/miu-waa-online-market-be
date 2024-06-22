@@ -44,7 +44,7 @@ public class SellerController {
         return ResponseEntity.ok(numberofproduct);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','SELLER', 'BUYER')")
     @GetMapping("/{id}")
     public ResponseEntity<SellerDetailDto> getSellerById(@PathVariable Long id) {
         SellerDetailDto seller = sellerService.findById(id);
@@ -66,7 +66,6 @@ public class SellerController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable Long id) {
         SellerDetailDto sellerToDelete = sellerService.findById(id);

@@ -28,8 +28,9 @@ public class ProductController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','BUYER','SELLER')")
     @GetMapping
-    public ResponseEntity<List<ProductDetailDto>> getAllProducts() {
-        List<ProductDetailDto> products = productService.findAll();
+    public ResponseEntity<List<ProductDetailDto>> getAllProducts(
+            @RequestParam(value = "category", required = false) String category) {
+        List<ProductDetailDto> products = productService.findAll(category);
         return ResponseEntity.ok(products);
     }
 
@@ -40,7 +41,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @PreAuthorize("hasAuthority('SELLER')")
+    @PreAuthorize("hasAnyAuthority('SELLER','BUYER')")
     @PostMapping(value = "/sellers/{sellerId}", consumes = "multipart/form-data")
     public ResponseEntity<ProductDetailDto> addProduct(@PathVariable Long sellerId,
             @Valid @RequestPart("product") ProductDto productDto,
@@ -77,7 +78,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','SELLER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','SELLER', 'BUYER')")
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<Set<ProductDetailDto>> getProductsBySeller(
             @PathVariable Long sellerId,

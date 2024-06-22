@@ -3,6 +3,7 @@ package com.example.minionlinemarket.Services.Imp;
 import com.example.minionlinemarket.Config.MapperConfiguration;
 import com.example.minionlinemarket.Model.Dto.Request.ProductDto;
 import com.example.minionlinemarket.Model.Dto.Response.ProductDetailDto;
+import com.example.minionlinemarket.Repository.OrderRepo;
 import com.example.minionlinemarket.Repository.ProductRepo;
 import com.example.minionlinemarket.Services.ProductService;
 import com.example.minionlinemarket.Services.SellerService;
@@ -26,21 +27,29 @@ public class ProductServiceImp implements ProductService {
 
     private final ProductRepo productRepo;
     private final SellerService sellerService;
+    private final OrderRepo orderRepo;
     private final MapperConfiguration mapperConfiguration;
 
     @Autowired
-    public ProductServiceImp(ProductRepo productRepo, SellerService sellerService, MapperConfiguration mapperConfiguration) {
+    public ProductServiceImp(ProductRepo productRepo, SellerService sellerService, OrderRepo orderRepo, MapperConfiguration mapperConfiguration) {
         this.productRepo = productRepo;
         this.sellerService = sellerService;
+        this.orderRepo = orderRepo;
         this.mapperConfiguration = mapperConfiguration;
     }
 
     @Override
-    public List<ProductDetailDto> findAll() {
-        return productRepo.findAll().stream()
+    public List<ProductDetailDto> findAll(String category) {
+        List<Product> products;
+        if (category == null || category.isEmpty() || category.equalsIgnoreCase("all")) {
+            products = productRepo.findAll();
+        } else {
+            products = productRepo.findByCategoryIgnoreCase(category);
+        }
+        return products.stream()
                 .filter(Product::isInStock)
                 .map(product -> {
-                    Hibernate.initialize(product.getReviews());  // Initialize reviews if needed
+                    Hibernate.initialize(product.getReviews());
                     return mapperConfiguration.convert(product, ProductDetailDto.class);
                 })
                 .collect(Collectors.toList());
@@ -69,7 +78,11 @@ public class ProductServiceImp implements ProductService {
                     }
                     return matches;
                 })
-                .map(product -> mapperConfiguration.convert(product, ProductDetailDto.class))
+                .map(product -> {
+                    ProductDetailDto productDetailDto = mapperConfiguration.convert(product, ProductDetailDto.class);
+                    productDetailDto.setIsDeletable(orderRepo.findProduct(product.getId()).isEmpty());
+                    return productDetailDto;
+                })
                 .collect(Collectors.toSet());
     }
 
@@ -77,7 +90,9 @@ public class ProductServiceImp implements ProductService {
     public ProductDetailDto findById(Long id) {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
-        Hibernate.initialize(product.getReviews());  // Initialize reviews if needed
+        Hibernate.initialize(product.getReviews());
+        ProductDetailDto productDetailDto = mapperConfiguration.convert(product, ProductDetailDto.class);
+        productDetailDto.setSellerName(product.getSeller().getName());
         return mapperConfiguration.convert(product, ProductDetailDto.class);
     }
 

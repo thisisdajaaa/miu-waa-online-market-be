@@ -38,4 +38,6 @@ public class ProductDetailDto {
     private String occasion;
     private Set<ReviewDetailDto> reviews;
     private String base64Image;
+    private Boolean isDeletable;
+    private String sellerName;
 }
