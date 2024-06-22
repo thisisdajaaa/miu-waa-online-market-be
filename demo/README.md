@@ -199,8 +199,8 @@ https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
 - End points have been documented using openAPI
 - However, the documentation will always default to the spring configuration end points
 - A work around has been provided 
-![API-DOC-JSON]("http://localhost:8080/api/v1/docs")
-![API-DOC-UI]("http://localhost:8080/api/v1/docs.html")
+[API-DOC-JSON]("http://localhost:8080/api/v1/docs")
+[API-DOC-UI]("http://localhost:8080/api/v1/docs.html")
 
 - Documentation with openAPI has been added to the project. The following dependencies have been added to the project
 ```
@@ -211,7 +211,7 @@ https://github.com/FasterXML/jackson-docs/wiki/JacksonPolymorphicDeserialization
 </dependency>
 ```
 - 
-![Documentation]("http://localhost:8080/swagger-ui/index.html")
+[Documentation]("http://localhost:8080/swagger-ui/index.html")
 
 - Added this to the application.properties file to ensure that the documentation is available
 ```
@@ -244,3 +244,5 @@ mvn clean install
 ```
 mvn spring-boot:run
 ```
+For more on the top visit the following link
+[STACKOVER FLOW](https://stackoverflow.com/questions/47835901/how-to-start-up-spring-boot-application-via-command-line)
