@@ -227,3 +227,20 @@ springdoc.swagger-ui.path=/api/v1/docs.html
                                 .requestMatchers("/api/v1/docs.html").permitAll()
                                 .requestMatchers("/api/v1/swagger-ui/**").permitAll()
 ```
+
+#### Commandline maven commands
+- Download maven using your native package manager and make sure its path is set in the environment variables
+- Add the following to the test class
+```
+     @SpringBootConfiguration 
+```
+- Ensure to navigate to the package with the  pom.xml file and run the following commands
+- To build the project run the following commands
+1. To clean the project
+```
+mvn clean install
+```
+2. To run the project
+```
+mvn spring-boot:run
+```
