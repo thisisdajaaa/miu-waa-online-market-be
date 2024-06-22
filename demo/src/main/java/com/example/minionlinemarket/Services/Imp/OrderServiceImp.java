@@ -118,8 +118,9 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public void delete(OrderDetailDto orderDetailDto) {
-        MyOrder order = mapperConfiguration.convert(orderDetailDto, MyOrder.class);
-        orderRepo.delete(order);
+        MyOrder order = mapperConfiguration.convert(orderRepo.findById(orderDetailDto.getId()), MyOrder.class);
+        order.setStatus(OrderStatus.CANCELED);
+        orderRepo.save(order);
     }
 
     @Override
