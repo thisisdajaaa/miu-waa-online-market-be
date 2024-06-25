@@ -1,6 +1,6 @@
-# MyOnlineMarket
+# Online Market
 
-MyOnlineMarket is an e-commerce platform that allows users to browse, purchase, and manage products. The platform supports multiple user roles including buyers, sellers, and administrators, each with different functionalities and permissions.
+Online Market is an e-commerce platform that allows users to browse, purchase, and manage products. The platform supports multiple user roles including buyers, sellers, and administrators, each with different functionalities and permissions.
 
 ## Description
 
